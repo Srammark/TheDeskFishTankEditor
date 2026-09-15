@@ -1,0 +1,142 @@
+:root {
+    --sumiStudio-font-size-1: 11px;
+    --sumiStudio-font-size-2: 12px;
+    --sumiStudio-font-size-3: 14px;
+    --sumiStudio-font-size-4: 16px;
+    --sumiStudio-font-size-5: 18px;
+    --sumiStudio-font-size-6: 20px;
+    --sumiStudio-font-size-7: 22px;
+    /* 此处应该时25px，但是示例使用时就是24px */
+    --sumiStudio-font-size-8: 24px;
+    --sumiStudio-font-size-9: 28px;
+    --sumiStudio-font-size-10: 32px;
+    --sumiStudio-font-size-11: 36px;
+    --sumiStudio-font-size-12: 40px;
+    --sumiStudio-font-size-13: 45px;
+    --sumiStudio-font-size-14: 51px;
+    --sumiStudio-font-size-15: 57px;
+
+    --sumiStudio-font-label-small-size: 11px;
+    --sumiStudio-font-label-medium-size: 12px;
+    --sumiStudio-font-label-large-size: 14px;
+    --sumiStudio-font-body-small-size: 12px;
+    --sumiStudio-font-body-medium-size: 14px;
+    --sumiStudio-font-body-large-size: 16px;
+    --sumiStudio-font-title-small-size: 14px;
+    --sumiStudio-font-title-medium-size: 16px;
+    --sumiStudio-font-title-large-size: 22px;
+    --sumiStudio-font-headline-small-size: 24px;
+    --sumiStudio-font-headline-medium-size: 28px;
+    --sumiStudio-font-headline-large-size: 32px;
+    --sumiStudio-font-display-small-size: 36px;
+    --sumiStudio-font-display-medium-size: 45px;
+    --sumiStudio-font-display-large-size: 57px;
+
+    --sumiStudio-transition-time-fast: 0.1s;
+    --sumiStudio-transition-time-medium : 0.15s;
+    --sumiStudio-transition-time-slow: 0.2s;
+    --sumiStudio-state-hover-opacity: 0.12;
+    --sumiStudio-state-focus-opacity: 0.14;
+    --sumiStudio-state-pressed-opacity: 0.14;
+    --sumiStudio-state-disabled-opacity: 0.38;
+
+     /* --- 负值层 (背景装饰) --- */
+    --sumiStudio-z-bg: -1;
+    /* --- 基础内容层 (默认) --- */
+    --sumiStudio-z-default: 1;
+    /* --- 悬浮交互层 (卡片Hover、Sticky吸顶) --- */
+    --sumiStudio-z-sticky: 100;
+    /* --- 导航固定层 (头部导航、侧边栏) --- */
+    --sumiStudio-z-navbar: 1000;
+    /* --- 下拉/气泡层 (Select, DatePicker, Popover) --- */
+    /* 必须盖住导航栏 */
+    --sumiStudio-z-dropdown: 2000;
+    /* --- 遮罩/抽屉层 (Drawer, Mask) --- */
+    --sumiStudio-z-mask: 3000;
+    --sumiStudio-z-drawer: 3000;
+    /* --- 弹窗层 (Modal) --- */
+    /* 给弹窗预留基础值，多层弹窗时用 JS 动态增加 */
+    --sumiStudio-z-modal: 4000;
+    /* --- 全局通知层 (Toast, Message) --- */
+    /* 必须是最高级，永远不被遮挡 */
+    --sumiStudio-z-toast: 5000;
+    /* --- 加载层/系统级 (Loading) --- */
+    --sumiStudio-z-loading: 6000;
+    /* --- 调试层 --- */
+    --sumiStudio-z-top: 9999;
+}
+
+.sumiStudio_font_label-small {
+    font-size: var(--sumiStudio-font-size-1);
+    line-height: 16px;
+}
+
+.sumiStudio_font_label-medium {
+    font-size: var(--sumiStudio-font-size-2);
+    line-height: 16px;
+}
+
+.sumiStudio_font_label-large {
+    font-size: var(--sumiStudio-font-size-3);
+    line-height: 20px;
+}
+
+.sumiStudio_font_body-small {
+    font-size: var(--sumiStudio-font-size-2);
+    line-height: 16px;
+}
+
+.sumiStudio_font_body-medium {
+    font-size: var(--sumiStudio-font-size-3);
+    line-height: 20px;
+}
+
+.sumiStudio_font_body-large {
+    font-size: var(--sumiStudio-font-size-4);
+    line-height: 24px;
+}
+
+.sumiStudio_font_title-small {
+    font-size: var(--sumiStudio-font-size-3);
+    line-height: 20px;
+}
+
+.sumiStudio_font_title-medium {
+    font-size: var(--sumiStudio-font-size-4);
+    line-height: 24px;
+}
+
+.sumiStudio_font_title-large {
+    font-size: var(--sumiStudio-font-size-7);
+    line-height: 28px;
+}
+
+.sumiStudio_font_headline-small {
+    font-size: var(--sumiStudio-font-size-8);
+    line-height: 32px;
+}
+
+.sumiStudio_font_headline-medium {
+    font-size: var(--sumiStudio-font-size-9);
+    line-height: 36px;
+}
+
+.sumiStudio_font_headline-large {
+    font-size: var(--sumiStudio-font-size-10);
+    line-height: 40px;
+}
+
+.sumiStudio_font_display-small {
+    font-size: var(--sumiStudio-font-size-11);
+    line-height: 44px;
+}
+
+.sumiStudio_font_display-medium {
+    font-size: var(--sumiStudio-font-size-13);
+    line-height: 52px;
+}
+
+.sumiStudio_font_display-large {
+    font-size: var(--sumiStudio-font-size-15);
+    line-height: 64px;
+}

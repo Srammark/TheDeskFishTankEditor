@@ -1,0 +1,58 @@
+{
+    "name": "sumistudio_app_2026",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build:example": "rsbuild build",
+        "dev": "rsbuild dev --open"
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        },
+        "./*": {
+            "import": "./src/*.ts"
+        }
+    },
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "@ktibow/material-color-utilities-nightly": "^0.4.1772748028000",
+        "@mdi/js": "^7.4.47",
+        "@zenfs/core": "^2.5.6",
+        "@zenfs/dom": "^1.2.9",
+        "core-js": "^3.49.0",
+        "gsap": "^3.15.0",
+        "inversify": "^8.1.0",
+        "jszip": "^3.10.1",
+        "pixi.js": "^8.18.1",
+        "reflect-metadata": "^0.2.2",
+        "sumi-tsextension": "^0.0.16",
+        "tinycolor2": "^1.6.0",
+        "v-wave": "^3.0.4"
+    },
+    "devDependencies": {
+        "@microsoft/api-extractor": "^7.58.7",
+        "@rsbuild/core": "^2.0.7",
+        "@rsbuild/plugin-node-polyfill": "^1.4.4",
+        "@rsbuild/plugin-vue": "^1.2.8",
+        "@rslib/core": "^0.21.5",
+        "@rspack/core": "^2.0.4",
+        "@types/tinycolor2": "^1.4.6",
+        "@types/wicg-file-system-access": "^2023.10.7",
+        "remote-web-worker": "^0.0.9",
+        "rsbuild-plugin-unplugin-vue": "^0.2.0",
+        "typescript": "^6.0.3",
+        "vue": "^3.5.34",
+        "worker-loader": "^3.0.8",
+        "worker-rspack-loader": "^3.1.3"
+    },
+    "peerDependencies": {
+        "vue": ">=3.5.28"
+    }
+}

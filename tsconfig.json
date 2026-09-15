@@ -1,0 +1,54 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "DOM",
+            "ES2024",
+            "esnext",
+            "dom",
+            "dom.iterable",
+            "scripthost"
+        ],
+        // TS5.0以后新版装饰器要设为false
+        "experimentalDecorators": false,
+        "emitDecoratorMetadata": false,
+        "jsx": "preserve",
+        "target": "ES2024",
+        "noEmit": true,
+        "skipLibCheck": true,
+        "jsxImportSource": "vue",
+        "useDefineForClassFields": true,
+        /* modules */
+        "module": "ESNext",
+        "verbatimModuleSyntax": true,
+        "resolveJsonModule": true,
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        /* type checking */
+        "strict": true,
+        /* 是否使用引用的模块 */
+        "noUnusedLocals": false,
+        /* 是否使用引用的变量 */
+        "noUnusedParameters": false,
+        "sourceMap": true,
+        "rootDir": "./src",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        },
+        "types": [ "@types/wicg-file-system-access"]
+    },
+    "include": [        
+        "src",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "distExample"
+    ]
+}

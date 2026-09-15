@@ -1,0 +1,79 @@
+.creatureItemPanel .panelTitle {
+    color: var(--sumiStudioCore-color-surface-on);
+}
+
+.creatureItemPanel .form {
+    gap: 12px;
+}
+
+.creatureItemPanel .sectionTitle {
+    margin-top: 8px;
+    font-size: var(--sumiStudio-font-body-medium-size);
+    color: var(--sumiStudioCore-color-primary);
+}
+
+.creatureItemPanel .fieldRow {
+    width: 500px;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.creatureItemPanel .label {
+    width: 80px;
+    text-align: right;
+    font-size: var(--sumiStudio-font-body-medium-size);
+    color: var(--sumiStudioCore-color-surface-on);
+    flex-shrink: 0;
+}
+
+.creatureItemPanel .fieldGroup {
+    gap: 8px;
+    align-items: center;
+}
+
+.creatureItemPanel .subLabel {
+    font-size: var(--sumiStudio-font-body-small-size);
+    color: var(--sumiStudioCore-color-surface-on-20);
+}
+
+.creatureItemPanel .unit {
+    font-size: var(--sumiStudio-font-body-small-size);
+    color: var(--sumiStudioCore-color-surface-on-20);
+}
+
+.creatureItemPanel .valueText {
+    font-size: var(--sumiStudio-font-body-medium-size);
+    color: var(--sumiStudioCore-color-surface-on);
+    min-width: 40px;
+    text-align: right;
+}
+
+.creatureItemPanel .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 200px;
+    height: 6px;
+    background: var(--sumiStudioCore-color-surface-variant-on);
+    border-radius: 3px;
+    outline: none;
+}
+
+.creatureItemPanel .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--sumiStudioCore-color-primary);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.creatureItemPanel .slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--sumiStudioCore-color-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
