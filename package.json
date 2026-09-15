@@ -4,6 +4,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "build": "rsbuild build",
         "build:example": "rsbuild build",
         "dev": "rsbuild dev --open"
     },

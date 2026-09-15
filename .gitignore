@@ -9,7 +9,6 @@ dist/
 distExample/
 script/
 src/Language
-.github
 
 # Profile
 .rspack-profile-*/
