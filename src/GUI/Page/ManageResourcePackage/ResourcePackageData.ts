@@ -35,7 +35,7 @@ export default class ResourcePackageData
     public constructor(packageId: string)
     {
         this.sFile = IOC.Get<IServiceFile>(Sym.ServiceFile);
-        this.workUri = URI.Parse(`indexedDB:///sumi/fish/packageEditor/packages/${packageId}`);
+        this.workUri = URI.Parse(`indexedDB:///theDeskFishTankEditor/fish/packageEditor/packages/${packageId}`);
 
         this.packageInfo = {
             id: '',

@@ -20,4 +20,11 @@ export default
             }
         }
     },
+    page: {
+        managePackage: {
+            packageList: {
+                import: '导入包'
+            }
+        }
+    }
 }

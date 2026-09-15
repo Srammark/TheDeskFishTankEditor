@@ -37,7 +37,7 @@ export default class ServiceSetting implements IServiceSetting
         }
         else
         {
-            this.userConfigPath = URI.Parse('indexedDB:///sumi/user/settings.json');
+            this.userConfigPath = URI.Parse('indexedDB:///theDeskFishTankEditor/user/settings.json');
         }
 
         // 用户配置

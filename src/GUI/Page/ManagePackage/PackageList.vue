@@ -6,7 +6,7 @@
             </div>
             <div class="wR_HEVC rightTools" style="width: 50%;">
                 <input ref="importInputRef" type="file" webkitdirectory directory multiple style="display: none;" @change="OnImport" />
-                <Button text="导入包" variant="outlined" @click="OnClickImport" />
+                <Button :text="T('page.managePackage.packageList.import')" variant="outlined" @click="OnClickImport" />
                 <Button text="新建包" @click="OnCreatePackage" />
             </div>
         </div>
@@ -33,6 +33,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import PackageListData from './PackageListData';
 import { type IPackageInfo } from '../ManageResourcePackage/Types';
@@ -44,6 +47,9 @@ const emit = defineEmits<{
 const listData = new PackageListData();
 const packageList = ref<IPackageInfo[]>([]);
 const importInputRef = ref<HTMLInputElement | null>(null);
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string) => sLanguage.T(key);
 
 onMounted(async () =>
 {

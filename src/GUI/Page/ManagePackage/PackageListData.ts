@@ -14,7 +14,7 @@ export default class PackageListData
     public constructor()
     {
         this.sFile = IOC.Get<IServiceFile>(Sym.ServiceFile);
-        this.rootUri = URI.Parse('indexedDB:///sumi/fish/packageEditor/packages');
+        this.rootUri = URI.Parse('indexedDB:///theDeskFishTankEditor/fish/packageEditor/packages');
     }
 
     public async GetPackageList(): Promise<IPackageInfo[]>

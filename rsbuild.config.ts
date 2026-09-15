@@ -25,7 +25,7 @@ function GetLocalIP(): string
 }
 
 const LOCAL_IP = GetLocalIP();
-const PORT = 14261;
+const PORT = 14262;
 
 // 是否启用 HTTPS
 const USE_HTTPS = false;

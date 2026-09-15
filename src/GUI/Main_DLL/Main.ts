@@ -18,6 +18,7 @@ import FileSystemDevice from '@/Core/Service/File_DLL/ItemFolder/Device/FileSyst
 import FileSystemHtml from '@/Core/Service/File_DLL/ItemFolder/Html/FileSystemHtml';
 import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
 import ServiceLanguage from '@/Core/Service/I18N_DLL/ServiceLanguage';
+import { EMLanguage } from '@/Core/IOC_DLL/Interface/I18N/Enum/EMLanguage';
 
 export default class Main
 {
@@ -27,6 +28,7 @@ export default class Main
         this.CreateServices();
         await this.RegisterFileSystem();
         this.InitTheme();
+        await this.InitLanguage();
     }
 
     private CreateServices(): void
@@ -36,6 +38,12 @@ export default class Main
         IOC.SetSingletonScope<IServiceFile>(Sym.ServiceFile, ServiceFile);
         IOC.SetSingletonScope<IServiceTheme>(Sym.ServiceTheme, ServiceTheme);
         IOC.SetSingletonScope<IServiceSetting>(Sym.ServiceSetting, ServiceSetting);
+    }
+
+    private async InitLanguage(): Promise<void>
+    {
+        IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).Init();
+        await IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).ChangeLanguage(EMLanguage.zh_Hans);
     }
 
     private InitTheme(): void
@@ -49,7 +57,7 @@ export default class Main
         await configure({
             mounts: {
                 '/memory': InMemory,
-                '/sumi': IndexedDB,
+                '/theDeskFishTankEditor': IndexedDB,
             }
         });
         IOC.Get<IServiceFile>(Sym.ServiceFile).RegisterFileSystem(Schemas.indexedDB, new FileSystemIndexedDB());

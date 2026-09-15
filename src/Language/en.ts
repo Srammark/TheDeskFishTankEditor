@@ -19,5 +19,12 @@ export default
                 }
             }
         }
+    },
+    page: {
+        managePackage: {
+            packageList: {
+                import: 'Import Package'
+            }
+        }
     }
 }

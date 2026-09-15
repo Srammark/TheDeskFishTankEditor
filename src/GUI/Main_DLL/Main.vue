@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount } from 'vue';
+import { ref, onMounted, onBeforeMount, getCurrentInstance } from 'vue';
 import Main from './Main';
 import './Main.css';
 import PackageList from '../Page/ManagePackage/PackageList.vue';
