@@ -35,7 +35,8 @@
         "reflect-metadata": "^0.2.2",
         "sumi-tsextension": "^0.0.16",
         "tinycolor2": "^1.6.0",
-        "v-wave": "^3.0.4"
+        "v-wave": "^3.0.4",
+        "vue-i18n": "^11.4.10"
     },
     "devDependencies": {
         "@microsoft/api-extractor": "^7.58.7",

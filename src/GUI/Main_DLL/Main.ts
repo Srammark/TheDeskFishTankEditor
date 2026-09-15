@@ -16,6 +16,8 @@ import { Schemas } from '@/Core/Module/String_DLL/Schemas';
 import FileSystemIndexedDB from '@/Core/Service/File_DLL/ItemFolder/IndexedDB/FileSystemIndexedDB';
 import FileSystemDevice from '@/Core/Service/File_DLL/ItemFolder/Device/FileSystemDevice';
 import FileSystemHtml from '@/Core/Service/File_DLL/ItemFolder/Html/FileSystemHtml';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import ServiceLanguage from '@/Core/Service/I18N_DLL/ServiceLanguage';
 
 export default class Main
 {
@@ -29,9 +31,10 @@ export default class Main
 
     private CreateServices(): void
     {
+        IOC.SetSingletonScope<IServiceLog>(Sym.ServiceLog, ServiceLog);
+        IOC.SetSingletonScope<IServiceLanguage>(Sym.ServiceLanguage, ServiceLanguage);
         IOC.SetSingletonScope<IServiceFile>(Sym.ServiceFile, ServiceFile);
         IOC.SetSingletonScope<IServiceTheme>(Sym.ServiceTheme, ServiceTheme);
-        IOC.SetSingletonScope<IServiceLog>(Sym.ServiceLog, ServiceLog);
         IOC.SetSingletonScope<IServiceSetting>(Sym.ServiceSetting, ServiceSetting);
     }
 
