@@ -2,12 +2,12 @@
     <div class="wC_HC packageList">
         <div class="wR_HC toolBar">
             <div class="wR_HSVC leftTools" style="width: 50%;">
-                <span class="sumiStudio_font_title-small" style="color: var(--sumiStudioCore-color-surface-on);">📦 资源包管理</span>
+                <span class="sumiStudio_font_title-small" style="color: var(--sumiStudioCore-color-surface-on);">📦 {{ T('page.managePackage.packageList.title') }}</span>
             </div>
             <div class="wR_HEVC rightTools" style="width: 50%;">
                 <input ref="importInputRef" type="file" webkitdirectory directory multiple style="display: none;" @change="OnImport" />
                 <Button :text="T('page.managePackage.packageList.import')" variant="outlined" @click="OnClickImport" />
-                <Button text="新建包" @click="OnCreatePackage" />
+                <Button :text="T('page.managePackage.packageList.create')" @click="OnCreatePackage" />
             </div>
         </div>
         <div class="wC_HS listBody">
@@ -15,17 +15,17 @@
                 <div v-for="info in packageList" :key="info.id" class="wR_HC packageCard" @click="OnOpenPackage(info.id)">
                     <span class="packageIcon">🎒</span>
                     <div class="wC_HSB packageMeta">
-                        <span class="sumiStudio_font_body-large lineBreak1" style="color: var(--sumiStudioCore-color-surface-on);">{{ info.name || '(未命名)' }}</span>
-                        <span class="sumiStudio_font_body-small lineBreak1" style="color: var(--sumiStudioCore-color-surface-on-20);">v{{ info.version }} · {{ info.author || '未知作者' }} · {{ info.id }}</span>
+                        <span class="sumiStudio_font_body-large lineBreak1" style="color: var(--sumiStudioCore-color-surface-on);">{{ info.name || T('page.managePackage.packageList.unnamed') }}</span>
+                        <span class="sumiStudio_font_body-small lineBreak1" style="color: var(--sumiStudioCore-color-surface-on-20);">v{{ info.version }} · {{ info.author || T('page.managePackage.packageList.unknownAuthor') }} · {{ info.id }}</span>
                     </div>
                     <div class="wR_HCB cardActions">
-                        <Button text="导出" variant="outlined" @click.stop="OnExportPackage(info)" />
-                        <Button text="删除" variant="outlined" @click.stop="OnDeletePackage(info)" />
+                        <Button :text="T('page.managePackage.packageList.export')" variant="outlined" @click.stop="OnExportPackage(info)" />
+                        <Button :text="T('page.managePackage.packageList.delete')" variant="outlined" @click.stop="OnDeletePackage(info)" />
                     </div>
                 </div>
             </template>
             <div v-else class="wR_HCVC placeholderPanel">
-                <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">暂无资源包，点击右上角"新建包"或"导入包"开始</span>
+                <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">{{ T('page.managePackage.packageList.emptyTip') }}</span>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@ const packageList = ref<IPackageInfo[]>([]);
 const importInputRef = ref<HTMLInputElement | null>(null);
 
 const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
-const T = (key: string) => sLanguage.T(key);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 onMounted(async () =>
 {
@@ -68,7 +68,7 @@ function OnOpenPackage(packageId: string): void
 
 function OnCreatePackage(): void
 {
-    const name = prompt('请输入新包名称：');
+    const name = prompt(T('page.managePackage.packageList.promptCreateName'));
     if (name === null || name.trim() === '') return;
 
     void listData.CreatePackage(name.trim()).then(RefreshList);
@@ -103,7 +103,7 @@ async function OnExportPackage(info: IPackageInfo): Promise<void>
 
 async function OnDeletePackage(info: IPackageInfo): Promise<void>
 {
-    if (confirm(`确定要删除资源包 "${info.name || info.id}" 吗？此操作不可撤销。`) === false) return;
+    if (confirm(T('page.managePackage.packageList.confirmDelete', { name: info.name || info.id })) === false) return;
     await listData.DeletePackage(info.id);
     await RefreshList();
 }

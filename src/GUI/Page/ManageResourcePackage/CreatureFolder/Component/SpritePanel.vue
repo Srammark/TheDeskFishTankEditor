@@ -1,6 +1,6 @@
 <template>
     <div class="wC_HSVS panel">
-        <span class="sumiStudio_font_title-small panelTitle">🎨 精灵图资源</span>
+        <span class="sumiStudio_font_title-small panelTitle">🎨 {{ T('page.manageResourcePackage.sprite.title') }}</span>
 
         <!-- Size 切换 -->
         <div class="wR_HC sizeTabs">
@@ -10,9 +10,9 @@
         </div>
 
         <div class="wR_HSVC" style="gap: 12px;">
-            <Button :text="editMode === 'image' ? '转为编辑碰撞体' : '转为编辑图片'" variant="outlined" @click="OnToggleEditMode" />
+            <Button :text="editMode === 'image' ? T('page.manageResourcePackage.sprite.toCollisionMode') : T('page.manageResourcePackage.sprite.toImageMode')" variant="outlined" @click="OnToggleEditMode" />
             <div class="wR_HCVCB frameSizeBar">
-                <span>帧尺寸</span>
+                <span>{{ T('page.manageResourcePackage.sprite.frameSize') }}</span>
                 <input v-model.number="frameSizeW" type="number" min="1" class="sizeInput" @change="OnFrameSizeChange" />
                 <span>×</span>
                 <input v-model.number="frameSizeH" type="number" min="1" class="sizeInput" @change="OnFrameSizeChange" />
@@ -25,7 +25,7 @@
         <div class="spriteTable">
             <div v-for="actionName in actionNameList" :key="actionName" class="tableRow">
                 <div class="actionHeader">
-                    <span class="actionLabel">{{ ActionLabelMap[actionName] }}</span>
+                    <span class="actionLabel">{{ GetActionLabel(actionName) }}</span>
                     <span class="previewBtn" :class="{ active: previewAction === actionName }" @click="OnTogglePreview(actionName)">{{ previewAction === actionName ? '⏸' : '▶' }}</span>
                     <div class="fpsInputWrap">
                         <span>FPS</span>
@@ -68,7 +68,7 @@
         />
 
         <div class="tipText">
-            <span>{{ editMode === 'image' ? '提示：点击格子上传帧图片' : '提示：点击格子选择要编辑碰撞体的帧' }}</span>
+            <span>{{ editMode === 'image' ? T('page.manageResourcePackage.sprite.tipImage') : T('page.manageResourcePackage.sprite.tipCollision') }}</span>
         </div>
     </div>
 </template>
@@ -76,6 +76,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, onUnmounted, watch } from 'vue';
 import { Texture } from 'pixi.js';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import SpriteFramePreview from '../../Common/Component/SpriteFramePreview.vue';
 import SpriteCollisionPanel from './SpriteCollisionPanel.vue';
@@ -97,11 +100,19 @@ const currentSize = ref<TSpriteSize>('Small');
 const actionNameList: TSpriteAction[] = ['idle', 'swim', 'eat'];
 const sizeNameList: TSpriteSize[] = ['Small', 'Medium', 'Large'];
 
-const ActionLabelMap: Record<TSpriteAction, string> = {
-    idle: '悬浮',
-    swim: '游动',
-    eat: '吃食'
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
+
+const ActionKeyMap: Record<TSpriteAction, string> = {
+    idle: 'page.manageResourcePackage.sprite.actionIdle',
+    swim: 'page.manageResourcePackage.sprite.actionSwim',
+    eat: 'page.manageResourcePackage.sprite.actionEat'
 };
+
+function GetActionLabel(action: TSpriteAction): string
+{
+    return T(ActionKeyMap[action]);
+}
 
 const editMode = ref<'image' | 'collision'>('image');
 const selectedFrame = ref<{ action: TSpriteAction; index: number } | null>(null);

@@ -1,22 +1,22 @@
 <template>
     <div class="wC_HSVS panel">
-        <span class="sumiStudio_font_title-small panelTitle">🐠 物种描述 (speciesDescription.json)</span>
+        <span class="sumiStudio_font_title-small panelTitle">🐠 {{ T('page.manageResourcePackage.speciesDesc.title') }}</span>
         <div class="wC_HC form">
             <div class="wR_HC fieldRow">
-                <span class="label">物种类型</span>
-                <SelectBox v-model:value="desc.category" width="300px" :list="SpeciesCategoryOptionList" placeholder="未设置" />
+                <span class="label">{{ T('page.manageResourcePackage.speciesDesc.category') }}</span>
+                <SelectBox v-model:value="desc.category" width="300px" :list="GetSpeciesCategoryOptionList()" :placeholder="T('page.manageResourcePackage.speciesDesc.categoryPlaceholder')" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">拉丁学名</span>
+                <span class="label">{{ T('page.manageResourcePackage.speciesDesc.scientificName') }}</span>
                 <InputBox v-model:text="desc.scientificName" width="300px" placeholder="Poecilia reticulata" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">名称</span>
-                <InputBox v-model:text="desc.nameKey" width="300px" placeholder="国际化字符串键名" />
+                <span class="label">{{ T('page.manageResourcePackage.speciesDesc.name') }}</span>
+                <InputBox v-model:text="desc.nameKey" width="300px" :placeholder="T('page.manageResourcePackage.speciesDesc.keyPlaceholder')" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">Wiki</span>
-                <InputBox v-model:text="desc.wikiKey" width="300px" placeholder="国际化字符串键名" />
+                <span class="label">{{ T('page.manageResourcePackage.speciesDesc.wiki') }}</span>
+                <InputBox v-model:text="desc.wikiKey" width="300px" :placeholder="T('page.manageResourcePackage.speciesDesc.keyPlaceholder')" />
             </div>
         </div>
     </div>
@@ -24,15 +24,21 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import InputBox from '@/Core/Module/GUI/Control_DLL/InputBox/InputBox.vue';
 import SelectBox from '@/Core/Module/GUI/Control_DLL/SelectBox/SelectBox.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
-import { SpeciesCategoryOptionList, type ISpeciesDescription } from '../../Types';
+import { GetSpeciesCategoryOptionList, type ISpeciesDescription } from '../../Types';
 
 const props = defineProps<{
     data: IResourcePackageData;
     speciesName: string;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const desc = ref<ISpeciesDescription>({ scientificName: '', nameKey: '', wikiKey: '' });
 

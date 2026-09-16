@@ -1,39 +1,39 @@
 <template>
     <div class="wC_HSVS panel">
-        <span class="sumiStudio_font_title-small panelTitle">🪸 装饰物预览：{{ decorationName }}</span>
+        <span class="sumiStudio_font_title-small panelTitle">🪸 {{ T('page.manageResourcePackage.decoration.previewTitle', { name: decorationName }) }}</span>
 
         <div class="wC_HSB basicInfo">
             <div class="propRow">
-                <label>名称 Key</label>
-                <input :value="item?.nameKey" type="text" placeholder="例如 decoration.apple.name" @change="OnUpdateItemField($event, 'nameKey')" />
+                <label>{{ T('page.manageResourcePackage.decoration.nameKey') }}</label>
+                <input :value="item?.nameKey" type="text" :placeholder="T('page.manageResourcePackage.decoration.nameKeyPlaceholder')" @change="OnUpdateItemField($event, 'nameKey')" />
             </div>
             <div class="propRow">
-                <label>简介 Key</label>
-                <input :value="item?.descriptionKey" type="text" placeholder="例如 decoration.apple.description" @change="OnUpdateItemField($event, 'descriptionKey')" />
+                <label>{{ T('page.manageResourcePackage.decoration.descriptionKey') }}</label>
+                <input :value="item?.descriptionKey" type="text" :placeholder="T('page.manageResourcePackage.decoration.descriptionKeyPlaceholder')" @change="OnUpdateItemField($event, 'descriptionKey')" />
             </div>
             <div class="propRow">
-                <label>分类</label>
-                <SelectBox width="200px" v-model:value="category" :list="DecorationCategoryOptionList" placeholder="请选择分类" />
+                <label>{{ T('page.manageResourcePackage.decoration.category') }}</label>
+                <SelectBox width="200px" v-model:value="category" :list="GetDecorationCategoryOptionList()" :placeholder="T('page.manageResourcePackage.decoration.categoryPlaceholder')" />
             </div>
         </div>
 
         <div class="wC_HS thumbnailRow">
-            <span class="thumbnailLabel">装饰物缩略图</span>
+            <span class="thumbnailLabel">{{ T('page.manageResourcePackage.decoration.thumbnail') }}</span>
             <div class="wC_HCVCB thumbnailWrap">
                 <div class="avatarBox" @click="OnUploadThumbnailClick">
                     <img v-if="thumbnailUrl !== null" :src="thumbnailUrl" class="avatarImg" />
-                    <span v-else class="avatarPlaceholder">无缩略图<br />点击上传</span>
+                    <span v-else class="avatarPlaceholder">{{ T('page.manageResourcePackage.decoration.noThumbnail') }}<br />{{ T('page.manageResourcePackage.decoration.clickUpload') }}</span>
                 </div>
                 <div class="wR_HC thumbnailActions">
-                    <Button text="上传缩略图" variant="outlined" @click="OnUploadThumbnailClick" />
-                    <Button v-if="thumbnailUrl !== null" text="删除缩略图" variant="outlined" @click="OnRemoveThumbnail" />
+                    <Button :text="T('page.manageResourcePackage.decoration.uploadThumbnail')" variant="outlined" @click="OnUploadThumbnailClick" />
+                    <Button v-if="thumbnailUrl !== null" :text="T('page.manageResourcePackage.decoration.removeThumbnail')" variant="outlined" @click="OnRemoveThumbnail" />
                 </div>
-                <span class="thumbnailTip">推荐尺寸 100 × 100 像素，上传后会自动等比例缩放</span>
+                <span class="thumbnailTip">{{ T('page.manageResourcePackage.decoration.thumbnailTip') }}</span>
             </div>
         </div>
 
         <div v-if="partList.length === 0" class="wR_HCVC placeholder">
-            <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">该装饰物暂无子部件</span>
+            <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">{{ T('page.manageResourcePackage.decoration.noParts') }}</span>
         </div>
         <div v-else ref="previewWrapRef" class="previewWrap"></div>
     </div>
@@ -45,11 +45,14 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { Application, Sprite, Texture, Graphics, Container, TextureSource } from 'pixi.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import SelectBox from '@/Core/Module/GUI/Control_DLL/SelectBox/SelectBox.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
 import {
-    EMDecorationAnimationMode, EMDecorationCategory, DecorationCategoryOptionList,
+    EMDecorationAnimationMode, EMDecorationCategory, GetDecorationCategoryOptionList,
     type IDecorationPart, type IDecorationFrameAnimation, type IDecorationItem,
     ComputeDecorationAnimationTransform
 } from '../../Types';
@@ -59,6 +62,9 @@ const props = defineProps<{
     data: IResourcePackageData;
     decorationName: string;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const previewWrapRef = ref<HTMLDivElement | null>(null);
 let app: Application | null = null;

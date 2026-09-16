@@ -2,78 +2,78 @@
     <div class="wC_HSVS panel">
         <div class="propForm">
             <div class="propRow">
-                <label>动画模式</label>
+                <label>{{ T('page.manageResourcePackage.decoration.animationMode') }}</label>
                 <select :value="animationMode" @change="OnAnimationModeChange">
-                    <option :value="EMDecorationAnimationMode.None">无</option>
-                    <option :value="EMDecorationAnimationMode.Tween">程序化动画</option>
-                    <option :value="EMDecorationAnimationMode.Frame">帧动画</option>
+                    <option :value="EMDecorationAnimationMode.None">{{ T('page.manageResourcePackage.decoration.animationModeNone') }}</option>
+                    <option :value="EMDecorationAnimationMode.Tween">{{ T('page.manageResourcePackage.decoration.animationModeTween') }}</option>
+                    <option :value="EMDecorationAnimationMode.Frame">{{ T('page.manageResourcePackage.decoration.animationModeFrame') }}</option>
                 </select>
             </div>
 
             <template v-if="animationMode === EMDecorationAnimationMode.Tween">
                 <div class="propRow">
-                    <label>动画类型</label>
+                    <label>{{ T('page.manageResourcePackage.decoration.animationType') }}</label>
                     <select :value="animationType" @change="OnAnimationTypeChange">
-                        <option v-for="opt in DecorationAnimationTypeOptionList" :key="opt.value" :value="opt.value">{{ opt.text }}</option>
+                        <option v-for="opt in GetDecorationAnimationTypeOptionList()" :key="opt.value" :value="opt.value">{{ opt.text }}</option>
                     </select>
                 </div>
 
                 <div v-if="animationType === EMDecorationTweenAnimationType.Sway" class="wC_HSB">
                     <div class="propRow">
-                        <label>幅度(px)</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.amplitude') }}</label>
                         <input v-model.number="swayParams.amplitude" type="number" min="0" @change="OnParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>频率(Hz)</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.frequency') }}</label>
                         <input v-model.number="swayParams.frequency" type="number" min="0" step="0.1" @change="OnParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>相位</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.phase') }}</label>
                         <input v-model.number="swayParams.phase" type="number" min="0" max="1" step="0.1" @change="OnParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>方向</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.axis') }}</label>
                         <select v-model="swayParams.axis" @change="OnParamsChange">
-                            <option value="x">水平</option>
-                            <option value="y">垂直</option>
+                            <option value="x">{{ T('page.manageResourcePackage.decoration.axisX') }}</option>
+                            <option value="y">{{ T('page.manageResourcePackage.decoration.axisY') }}</option>
                         </select>
                     </div>
                 </div>
 
                 <div v-if="animationType === EMDecorationTweenAnimationType.Breathe" class="wC_HSB">
                     <div class="propRow">
-                        <label>最小缩放</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.minScale') }}</label>
                         <input v-model.number="breatheParams.minScale" type="number" min="0" step="0.1" @change="OnParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>最大缩放</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.maxScale') }}</label>
                         <input v-model.number="breatheParams.maxScale" type="number" min="0" step="0.1" @change="OnParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>频率(Hz)</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.frequency') }}</label>
                         <input v-model.number="breatheParams.frequency" type="number" min="0" step="0.1" @change="OnParamsChange" />
                     </div>
                 </div>
 
                 <div v-if="animationType === EMDecorationTweenAnimationType.Rotate" class="wC_HSB">
                     <div class="propRow">
-                        <label>最小角度</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.minAngle') }}</label>
                         <input v-model.number="rotateParams.minAngle" type="number" @change="OnParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>最大角度</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.maxAngle') }}</label>
                         <input v-model.number="rotateParams.maxAngle" type="number" @change="OnParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>频率(Hz)</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.frequency') }}</label>
                         <input v-model.number="rotateParams.frequency" type="number" min="0" step="0.1" @change="OnParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>锚点 X</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.pivotX') }}</label>
                         <input v-model.number="rotateParams.pivot[0]" type="number" @change="OnParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>锚点 Y</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.pivotY') }}</label>
                         <input v-model.number="rotateParams.pivot[1]" type="number" @change="OnParamsChange" />
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                         <input v-model.number="frameAnimationParams.fps" type="number" min="1" max="120" @change="OnFrameParamsChange" />
                     </div>
                     <div class="propRow">
-                        <label>帧尺寸</label>
+                        <label>{{ T('page.manageResourcePackage.decoration.frameSize') }}</label>
                         <input v-model.number="frameAnimationParams.frameSize[0]" type="number" min="1" class="sizeInput" @change="OnFrameParamsChange" />
                         <span>×</span>
                         <input v-model.number="frameAnimationParams.frameSize[1]" type="number" min="1" class="sizeInput" @change="OnFrameParamsChange" />
@@ -94,9 +94,9 @@
                 </div>
 
                 <div class="wR_HC frameActions">
-                    <Button text="上传雪碧图" variant="outlined" @click="OnClickUploadSpriteSheet" />
-                    <Button text="批量上传帧" variant="outlined" @click="OnClickUploadFrames" />
-                    <Button text="添加空帧" variant="outlined" @click="OnAddFrame" />
+                    <Button :text="T('page.manageResourcePackage.decoration.uploadSheet')" variant="outlined" @click="OnClickUploadSpriteSheet" />
+                    <Button :text="T('page.manageResourcePackage.decoration.uploadFrames')" variant="outlined" @click="OnClickUploadFrames" />
+                    <Button :text="T('page.manageResourcePackage.decoration.addFrame')" variant="outlined" @click="OnAddFrame" />
                 </div>
 
                 <input ref="spriteSheetInputRef" type="file" accept="image/*" style="display: none;" @change="OnSpriteSheetSelected" />
@@ -127,12 +127,15 @@ import { ref, shallowRef, onMounted, onUnmounted, computed, watch, reactive } fr
 import { Application, Sprite, Texture, Graphics, TextureSource } from 'pixi.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import SpriteFramePreview from '../../Common/Component/SpriteFramePreview.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
 import {
     EMDecorationAnimationMode,
-    EMDecorationTweenAnimationType, DecorationAnimationTypeOptionList,
+    EMDecorationTweenAnimationType, GetDecorationAnimationTypeOptionList,
     type IDecorationPart, type IDecorationTweenAnimation,
     type IDecorationTweenAnimationSway, type IDecorationTweenAnimationBreathe, type IDecorationTweenAnimationRotate,
     type IDecorationFrameAnimation, type IDecorationFrameData,
@@ -151,6 +154,9 @@ const emit = defineEmits<{
     (e: 'update', patch: Partial<IDecorationPart>): void;
     (e: 'selectFrame', index: number): void;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const previewWrapRef = ref<HTMLDivElement | null>(null);
 const spriteSheetInputRef = ref<HTMLInputElement | null>(null);

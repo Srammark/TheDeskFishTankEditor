@@ -1,6 +1,16 @@
 /** 基底资源文件夹名 */
 export const SUBSTRATE_FOLDER = 'Substrate' as const;
 
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import IOC from '@/Core/IOC_DLL/IOC';
+import Sym from '@/Core/IOC_DLL/Sym';
+
+/** 国际化翻译（延迟获取服务，避免模块加载时 IOC 未就绪） */
+function T(key: string, args?: Record<string, unknown>): string
+{
+    return IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).T(key, args);
+}
+
 /** 基底类型 */
 export enum EMSubstrateType
 {
@@ -9,9 +19,12 @@ export enum EMSubstrateType
 }
 
 /** 基底类型选项 */
-export const SubstrateTypeOptionList = [
-    { value: EMSubstrateType.Texture, text: '纹理' }
-];
+export function GetSubstrateTypeOptionList()
+{
+    return [
+        { value: EMSubstrateType.Texture, text: T('page.manageResourcePackage.options.substrateType.texture') }
+    ];
+}
 
 /** 基底单张纹理视图 */
 export interface ISubstrateTextureView

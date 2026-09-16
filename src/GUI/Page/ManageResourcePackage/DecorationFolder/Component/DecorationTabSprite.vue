@@ -2,18 +2,21 @@
     <div class="wC_HSVS tabContent">
         <input ref="spriteInputRef" type="file" accept="image/*" style="display: none;" @change="OnSpriteSelected" />
         <div class="wR_HC spriteActions">
-            <Button text="上传精灵图" variant="outlined" @click="OnClickUpload" />
-            <Button v-if="part.sprite !== undefined" text="删除" variant="outlined" @click="OnRemove" />
+            <Button :text="T('page.manageResourcePackage.decoration.uploadSprite')" variant="outlined" @click="OnClickUpload" />
+            <Button v-if="part.sprite !== undefined" :text="T('page.manageResourcePackage.decoration.removeSprite')" variant="outlined" @click="OnRemove" />
         </div>
         <div class="spritePreviewWrap">
             <img v-if="spriteDataURL !== null" :src="spriteDataURL" class="spritePreview" />
-            <span v-else class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">尚未上传精灵图</span>
+            <span v-else class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">{{ T('page.manageResourcePackage.decoration.noSprite') }}</span>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
 import type { IDecorationPart } from '../../Types';
@@ -27,6 +30,9 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'update'): void;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const spriteInputRef = ref<HTMLInputElement | null>(null);
 

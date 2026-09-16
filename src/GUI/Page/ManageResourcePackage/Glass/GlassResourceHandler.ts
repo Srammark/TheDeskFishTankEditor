@@ -1,5 +1,8 @@
 import { URI } from '@/Core/Module/String_DLL/URI';
 import { EMFileType } from '@/Core/IOC_DLL/Interface/File/IFileSystem';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import IOC from '@/Core/IOC_DLL/IOC';
+import Sym from '@/Core/IOC_DLL/Sym';
 import {
     EMResourceType, GLASS_FOLDER, type IResourceHandler, type IResourceContext,
     type ITreeNode, EMTreeNodeType
@@ -9,6 +12,12 @@ import {
     type IGlassStyleItem, type TGlassPartKey, type TGlassTextureSlot
 } from './TypeGlass';
 
+/** 国际化翻译（延迟获取服务，避免模块加载时 IOC 未就绪） */
+function T(key: string, args?: Record<string, unknown>): string
+{
+    return IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).T(key, args);
+}
+
 /**
  * 玻璃样式资源处理器
  * 负责 Glass 下玻璃样式数据的读写与树形结构生成。
@@ -17,7 +26,7 @@ export default class GlassResourceHandler implements IResourceHandler
 {
     public readonly ResourceType: EMResourceType = EMResourceType.Glass;
     public readonly FolderName: string = GLASS_FOLDER;
-    public readonly DisplayName: string = '玻璃样式';
+    public get DisplayName(): string { return T('page.manageResourcePackage.handler.glass'); }
 
     public styleNameList: string[];
     private itemMap: Map<string, IGlassStyleItem>;
@@ -245,7 +254,7 @@ export default class GlassResourceHandler implements IResourceHandler
             id: GLASS_FOLDER,
             type: EMTreeNodeType.GlassFolder,
             resourceType: EMResourceType.Glass,
-            label: '玻璃样式',
+            label: T('page.manageResourcePackage.handler.glass'),
             path: GLASS_FOLDER,
             children: []
         };

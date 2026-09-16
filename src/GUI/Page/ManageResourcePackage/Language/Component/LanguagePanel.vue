@@ -1,33 +1,33 @@
 <template>
     <div class="wC_HSVS panel">
         <div class="wR_HSVC" style="justify-content: space-between; flex-shrink: 0;">
-            <span class="sumiStudio_font_title-small panelTitle">🌐 国际化 (Language/{{ langTag }}.json)</span>
-            <Button text="导入 JSON" variant="outlined" @click="OnToggleImport" />
+            <span class="sumiStudio_font_title-small panelTitle">🌐 {{ T('page.manageResourcePackage.language.title', { langTag }) }}</span>
+            <Button :text="T('page.manageResourcePackage.language.importJson')" variant="outlined" @click="OnToggleImport" />
         </div>
         <div class="splitView">
             <div class="editorPane">
-                <div class="hint sumiStudio_font_body-small">键支持点号路径，如 <code>fish.name</code> 会生成 <code>{ "fish": { "name": "..." } }</code></div>
+                <div class="hint sumiStudio_font_body-small">{{ T('page.manageResourcePackage.language.hintPrefix') }} <code>fish.name</code> {{ T('page.manageResourcePackage.language.hintSuffix') }} <code>{ "fish": { "name": "..." } }</code></div>
                 <div v-if="isImportVisible" class="importArea">
-                    <TextArea v-model:text="importJsonText" class="importText" placeholder='粘贴 JSON，如 { "fish": { "name": "孔雀鱼" } }' />
+                    <TextArea v-model:text="importJsonText" class="importText" :placeholder="T('page.manageResourcePackage.language.importPlaceholder')" />
                     <div class="wR_HEVC" style="gap: 8px;">
-                        <Button text="取消" variant="text" @click="OnToggleImport" />
-                        <Button text="合并生成条目" @click="OnApplyImport" />
+                        <Button :text="T('page.manageResourcePackage.language.cancel')" variant="text" @click="OnToggleImport" />
+                        <Button :text="T('page.manageResourcePackage.language.merge')" @click="OnApplyImport" />
                     </div>
                 </div>
                 <div class="entryList">
                     <div v-for="(entry, index) in entryList" :key="index" class="wR_HSVS entryRow">
-                        <InputBox v-model:text="entry.path" placeholder="键 (如 a.b.c)" width="320px" />
-                        <TextArea v-model:text="entry.value" placeholder="值" width="280px" />
+                        <InputBox v-model:text="entry.path" :placeholder="T('page.manageResourcePackage.language.keyPlaceholder')" width="320px" />
+                        <TextArea v-model:text="entry.value" :placeholder="T('page.manageResourcePackage.language.valuePlaceholder')" width="280px" />
                         <Button variant="text" icon-path="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" style="width: 28px; height: 28px;" icon-size="18" @click="OnRemoveEntry(index)" />
                     </div>
                 </div>
                 <div class="addRow" @click="OnAddEntry">
                     <span class="nodeIcon">+</span>
-                    <span class="nodeLabel">添加条目</span>
+                    <span class="nodeLabel">{{ T('page.manageResourcePackage.language.addEntry') }}</span>
                 </div>
             </div>
             <div class="previewPane">
-                <span class="previewTitle sumiStudio_font_title-small">实时预览</span>
+                <span class="previewTitle sumiStudio_font_title-small">{{ T('page.manageResourcePackage.language.preview') }}</span>
                 <pre class="jsonPreview">{{ jsonPreview }}</pre>
             </div>
         </div>
@@ -36,6 +36,9 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import InputBox from '@/Core/Module/GUI/Control_DLL/InputBox/InputBox.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
@@ -45,6 +48,9 @@ const props = defineProps<{
     data: IResourcePackageData;
     langTag: string;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 interface ILanguageEntry {
     path: string;
@@ -124,11 +130,11 @@ function OnApplyImport(): void {
     try {
         parsed = JSON.parse(importJsonText.value);
     } catch {
-        alert('JSON 解析失败，请检查格式。');
+        alert(T('page.manageResourcePackage.language.alertParseFailed'));
         return;
     }
     if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-        alert('JSON 必须是一个对象。');
+        alert(T('page.manageResourcePackage.language.alertNotObject'));
         return;
     }
 

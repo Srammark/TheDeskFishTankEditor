@@ -1,14 +1,14 @@
 <template>
     <div class="wC_HSVS packageTree">
         <div class="wR_HC treeHeader">
-            <span class="sumiStudio_font_title-small" style="color: var(--sumiStudioCore-color-surface-on);">扩展包结构</span>
+            <span class="sumiStudio_font_title-small" style="color: var(--sumiStudioCore-color-surface-on);">{{ T('page.manageResourcePackage.tree.title') }}</span>
         </div>
         <div class="treeContent">
             <!-- 包信息 -->
             <div class="treeNode" @click="OnSelectNode(infoNode)">
                 <div :class="['nodeRow', selectedId === infoNode.id ? 'nodeRow-select' : '']">
                     <span class="nodeIcon">📦</span>
-                    <span class="nodeLabel">包信息</span>
+                    <span class="nodeLabel">{{ T('page.manageResourcePackage.tree.packageInfo') }}</span>
                 </div>
             </div>
 
@@ -16,7 +16,7 @@
             <div class="treeNode">
                 <div :class="['nodeRow', selectedId === languageNode.id ? 'nodeRow-select' : '']" @click="OnSelectNode(languageNode)">
                     <span class="nodeIcon">🌐</span>
-                    <span class="nodeLabel">国际化</span>
+                    <span class="nodeLabel">{{ T('page.manageResourcePackage.tree.language') }}</span>
                 </div>
                 <div v-if="expandedSet.has(languageNode.id)" class="treeChildren">
                     <TreeNode
@@ -31,10 +31,10 @@
                     />
                     <div v-if="isAddingLanguage === false" class="nodeRow childRow" @click="OnAddLanguage">
                         <span class="nodeIcon">+</span>
-                        <span class="nodeLabel">添加语言</span>
+                        <span class="nodeLabel">{{ T('page.manageResourcePackage.tree.addLanguage') }}</span>
                     </div>
                     <div v-else class="nodeRow childRow" style="gap: 4px;">
-                        <SelectBox v-model:value="newLangTag" width="160px" placeholder="选择语言" :list="availableLangList" />
+                        <SelectBox v-model:value="newLangTag" width="160px" :placeholder="T('page.manageResourcePackage.tree.selectLanguage')" :list="availableLangList" />
                         <Button variant="text" icon-path="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" style="width: 20px; height: 20px; margin-left: auto;" icon-size="16" @click="OnCancelAddLanguage" />
                     </div>
                 </div>
@@ -73,6 +73,9 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import SelectBox from '@/Core/Module/GUI/Control_DLL/SelectBox/SelectBox.vue';
 import {
@@ -110,11 +113,14 @@ const expandedSet = ref(new Set<string>());
 const isAddingLanguage = ref(false);
 const newLangTag = ref('');
 
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
+
 const infoNode: ITreeNode = {
     id: 'info',
     type: EMTreeNodeType.PackageInfo,
     resourceType: null,
-    label: '包信息',
+    label: T('page.manageResourcePackage.tree.packageInfo'),
     path: 'info'
 };
 
@@ -122,7 +128,7 @@ const languageNode: ITreeNode = {
     id: LANGUAGE_FOLDER,
     type: EMTreeNodeType.LanguageFolder,
     resourceType: null,
-    label: '国际化',
+    label: T('page.manageResourcePackage.tree.language'),
     path: LANGUAGE_FOLDER
 };
 
@@ -201,11 +207,11 @@ function GetAddResourceLabel(type: EMResourceType): string
 {
     switch (type)
     {
-        case EMResourceType.Creature: return '添加物种';
-        case EMResourceType.Decoration: return '添加装饰物';
-        case EMResourceType.Substrate: return '添加基底';
-        case EMResourceType.Glass: return '添加玻璃样式';
-        default: return '添加资源';
+        case EMResourceType.Creature: return T('page.manageResourcePackage.tree.addSpecies');
+        case EMResourceType.Decoration: return T('page.manageResourcePackage.tree.addDecoration');
+        case EMResourceType.Substrate: return T('page.manageResourcePackage.tree.addSubstrate');
+        case EMResourceType.Glass: return T('page.manageResourcePackage.tree.addGlass');
+        default: return T('page.manageResourcePackage.tree.addResource');
     }
 }
 
@@ -284,7 +290,7 @@ function OnAddResourceChild(node: ITreeNode): void
 
         const newPart: IDecorationPart = {
             id: GenerateID(),
-            name: `部件 ${item.partList.length + 1}`,
+            name: T('page.manageResourcePackage.tree.defaultPartName', { index: item.partList.length + 1 }),
             zIndex: item.partList.length,
             areaList: []
         };

@@ -1,17 +1,20 @@
 <template>
     <div class="wC_HSB tabContent">
         <div class="propRow">
-            <label>名称</label>
+            <label>{{ T('page.manageResourcePackage.decoration.partName') }}</label>
             <input v-model="part.name" type="text" @change="emit('update')" />
         </div>
         <div class="propRow">
-            <label>Z 层级</label>
+            <label>{{ T('page.manageResourcePackage.decoration.partZIndex') }}</label>
             <input v-model.number="part.zIndex" type="number" @change="emit('update')" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import type { IDecorationPart } from '../../Types';
 
 defineProps<{
@@ -21,6 +24,9 @@ defineProps<{
 const emit = defineEmits<{
     (e: 'update'): void;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 </script>
 
 <style scoped>

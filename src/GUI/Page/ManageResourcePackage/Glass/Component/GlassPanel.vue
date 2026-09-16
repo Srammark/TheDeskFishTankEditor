@@ -1,31 +1,31 @@
 <template>
     <div class="wC_HSVS panel">
-        <span class="sumiStudio_font_title-small panelTitle">🪟 玻璃样式编辑：{{ styleName }}</span>
+        <span class="sumiStudio_font_title-small panelTitle">🪟 {{ T('page.manageResourcePackage.glass.title', { name: styleName }) }}</span>
 
         <div class="wC_HSB basicInfo">
             <div class="propRow">
-                <label>名称 Key</label>
-                <input :value="item?.nameKey" type="text" placeholder="例如 glass.default.name" @change="OnUpdateItemField($event, 'nameKey')" />
+                <label>{{ T('page.manageResourcePackage.glass.nameKey') }}</label>
+                <input :value="item?.nameKey" type="text" :placeholder="T('page.manageResourcePackage.glass.nameKeyPlaceholder')" @change="OnUpdateItemField($event, 'nameKey')" />
             </div>
             <div class="propRow">
-                <label>简介 Key</label>
-                <input :value="item?.descriptionKey" type="text" placeholder="例如 glass.default.description" @change="OnUpdateItemField($event, 'descriptionKey')" />
+                <label>{{ T('page.manageResourcePackage.glass.descriptionKey') }}</label>
+                <input :value="item?.descriptionKey" type="text" :placeholder="T('page.manageResourcePackage.glass.descriptionKeyPlaceholder')" @change="OnUpdateItemField($event, 'descriptionKey')" />
             </div>
         </div>
 
         <div class="wC_HSB overallColorRow">
-            <label>整体颜色</label>
+            <label>{{ T('page.manageResourcePackage.glass.overallColor') }}</label>
             <input type="color" :value="overallColor" @input="OnOverallColorInput" />
-            <span class="tip">仅用于快速统一配色，不会保存到 item.json</span>
+            <span class="tip">{{ T('page.manageResourcePackage.glass.overallColorTip') }}</span>
         </div>
 
         <div class="wC_HS partSection">
             <div class="wR_HS partList">
-                <div v-for="meta in GlassPartMetaList" :key="meta.key" :class="['partCard', selectedPart === meta.key ? 'partCard-select' : '']" @click="OnSelectPart(meta.key)">
+                <div v-for="meta in GetGlassPartMetaList()" :key="meta.key" :class="['partCard', selectedPart === meta.key ? 'partCard-select' : '']" @click="OnSelectPart(meta.key)">
                     <span class="partLabel">{{ meta.label }}</span>
                     <div class="partSummary">
-                        <span v-if="GetPart(meta.key).type === EMGlassPartType.Color" class="partType">颜色</span>
-                        <span v-else class="partType">纹理</span>
+                        <span v-if="GetPart(meta.key).type === EMGlassPartType.Color" class="partType">{{ T('page.manageResourcePackage.glass.partTypeColor') }}</span>
+                        <span v-else class="partType">{{ T('page.manageResourcePackage.glass.partTypeTexture') }}</span>
                         <div v-if="GetPart(meta.key).type === EMGlassPartType.Color" class="colorDot" :style="GetColorStyle(meta.key)"></div>
                         <span v-else class="textureName">{{ GetPart(meta.key).textureImage }}</span>
                     </div>
@@ -35,17 +35,17 @@
             <div v-if="selectedPart !== null" class="partEditor">
                 <span class="sumiStudio_font_title-small editorTitle">{{ GetPartMeta(selectedPart).label }}</span>
                 <div class="propRow">
-                    <label>类型</label>
-                    <SelectBox width="200px" v-model:value="selectedPartType" :list="GlassPartTypeOptionList" placeholder="请选择类型" />
+                    <label>{{ T('page.manageResourcePackage.glass.type') }}</label>
+                    <SelectBox width="200px" v-model:value="selectedPartType" :list="GetGlassPartTypeOptionList()" :placeholder="T('page.manageResourcePackage.glass.typePlaceholder')" />
                 </div>
 
                 <template v-if="selectedPartType === EMGlassPartType.Color">
                     <div class="propRow">
-                        <label>颜色</label>
+                        <label>{{ T('page.manageResourcePackage.glass.color') }}</label>
                         <input type="color" :value="selectedPartColor" @input="OnPartColorInput" />
                     </div>
                     <div class="propRow">
-                        <label>不透明度</label>
+                        <label>{{ T('page.manageResourcePackage.glass.alpha') }}</label>
                         <input type="range" min="0" max="255" :value="selectedPartAlpha" @input="OnPartAlphaInput" />
                         <span class="alphaValue">{{ selectedPartAlpha }}</span>
                     </div>
@@ -55,16 +55,16 @@
                     <div class="wC_HCVCB textureUpload">
                         <div class="texturePreview" @click="OnUploadTextureClick">
                             <img v-if="selectedTextureUrl !== null" :src="selectedTextureUrl" class="textureImg" />
-                            <span v-else class="texturePlaceholder">点击上传纹理</span>
+                            <span v-else class="texturePlaceholder">{{ T('page.manageResourcePackage.glass.texturePlaceholder') }}</span>
                         </div>
                         <div class="wR_HC textureActions">
-                            <Button text="上传纹理" variant="outlined" @click="OnUploadTextureClick" />
-                            <Button v-if="selectedTextureUrl !== null" text="删除纹理" variant="outlined" @click="OnRemoveTexture" />
+                            <Button :text="T('page.manageResourcePackage.glass.uploadTexture')" variant="outlined" @click="OnUploadTextureClick" />
+                            <Button v-if="selectedTextureUrl !== null" :text="T('page.manageResourcePackage.glass.removeTexture')" variant="outlined" @click="OnRemoveTexture" />
                         </div>
                     </div>
                     <div class="propRow">
-                        <label>填充模式</label>
-                        <SelectBox width="200px" v-model:value="selectedPartTextureMode" :list="GlassTextureModeOptionList" placeholder="请选择填充模式" />
+                        <label>{{ T('page.manageResourcePackage.glass.textureMode') }}</label>
+                        <SelectBox width="200px" v-model:value="selectedPartTextureMode" :list="GetGlassTextureModeOptionList()" :placeholder="T('page.manageResourcePackage.glass.textureModePlaceholder')" />
                     </div>
                 </template>
             </div>
@@ -72,8 +72,8 @@
 
         <div class="previewSection">
             <div class="wR_HS previewHeader">
-                <span class="sumiStudio_font_title-small previewTitle">预览</span>
-                <Button text="从预览生成缩略图" variant="outlined" @click="GenerateThumbnailFromPreview" />
+                <span class="sumiStudio_font_title-small previewTitle">{{ T('page.manageResourcePackage.glass.preview') }}</span>
+                <Button :text="T('page.manageResourcePackage.glass.generateThumbnail')" variant="outlined" @click="GenerateThumbnailFromPreview" />
             </div>
             <div ref="previewWrapRef" class="previewWrap"></div>
         </div>
@@ -84,12 +84,15 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { Application, Container, Graphics, Sprite, Texture, TilingSprite } from 'pixi.js';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import SelectBox from '@/Core/Module/GUI/Control_DLL/SelectBox/SelectBox.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
 import {
-    EMGlassPartType, GlassPartTypeOptionList, EMGlassTextureMode, GlassTextureModeOptionList,
-    GlassPartMetaList, GLASS_DEFAULT_OVERALL_COLOR,
+    EMGlassPartType, GetGlassPartTypeOptionList, EMGlassTextureMode, GetGlassTextureModeOptionList,
+    GetGlassPartMetaList, GLASS_DEFAULT_OVERALL_COLOR,
     type IGlassStyleItem, type IGlassPart, type TGlassPartKey
 } from '../TypeGlass';
 
@@ -97,6 +100,9 @@ const props = defineProps<{
     data: IResourcePackageData;
     styleName: string;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const textureInputRef = ref<HTMLInputElement | null>(null);
 const selectedPart = ref<TGlassPartKey | null>('BackSurface');
@@ -193,7 +199,7 @@ function GetPart(key: TGlassPartKey): IGlassPart
 
 function GetPartMeta(key: TGlassPartKey)
 {
-    return GlassPartMetaList.find(m => m.key === key)!;
+    return GetGlassPartMetaList().find(m => m.key === key)!;
 }
 
 function GetColorStyle(key: TGlassPartKey)
@@ -263,7 +269,7 @@ function OnOverallColorInput(event: Event): void
     overallColor.value = color;
     if (item.value === undefined) return;
 
-    for (const meta of GlassPartMetaList)
+    for (const meta of GetGlassPartMetaList())
     {
         const part = item.value.partMap[meta.key];
         if (part === undefined) continue;

@@ -1,10 +1,10 @@
 <template>
     <div class="animationPreview">
         <div class="wR_HC previewHeader">
-            <span class="previewTitle">动画预览</span>
+            <span class="previewTitle">{{ T('page.manageResourcePackage.animationPreview.title') }}</span>
             <div class="wR_HC controls">
-                <Button :text="isPlaying ? '暂停' : '播放'" @click="OnTogglePlay" />
-                <label class="showColliderLabel"><input v-model="showColliders" type="checkbox" />显示碰撞体</label>
+                <Button :text="isPlaying ? T('page.manageResourcePackage.animationPreview.pause') : T('page.manageResourcePackage.animationPreview.play')" @click="OnTogglePlay" />
+                <label class="showColliderLabel"><input v-model="showColliders" type="checkbox" />{{ T('page.manageResourcePackage.animationPreview.showColliders') }}</label>
             </div>
         </div>
         <div ref="canvasWrapRef" class="canvasWrap"></div>
@@ -17,6 +17,9 @@ import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { Application, Sprite, Texture, Graphics, TextureSource } from 'pixi.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import { EMGeometryType } from '@/Core/Module/Collision2D_DLL/Geometry/GeometryType';
 import type { IFrameData, ICreatureCollider, IColliderDataCircle, IColliderDataRectangle, IColliderDataCapsule, IColliderDataEllipse, IColliderDataPie, IColliderDataSegment, IColliderDataPolygon } from '../../Types';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
@@ -27,6 +30,9 @@ const props = defineProps<{
     frameDataList: IFrameData[];
     collider: ICreatureCollider;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const canvasWrapRef = ref<HTMLDivElement | null>(null);
 let app: Application | null = null;

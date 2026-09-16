@@ -1,31 +1,31 @@
 <template>
     <div class="wC_HSVS panel">
-        <span class="sumiStudio_font_title-small panelTitle">🧬 品系信息</span>
+        <span class="sumiStudio_font_title-small panelTitle">🧬 {{ T('page.manageResourcePackage.strain.title') }}</span>
         <div class="wC_HC form">
             <div class="wR_HC fieldRow">
-                <span class="label">拉丁学名</span>
-                <InputBox v-model:text="desc.scientificName" width="300px" placeholder="继承自物种描述" />
+                <span class="label">{{ T('page.manageResourcePackage.strain.scientificName') }}</span>
+                <InputBox v-model:text="desc.scientificName" width="300px" :placeholder="T('page.manageResourcePackage.strain.scientificNamePlaceholder')" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">名称</span>
-                <InputBox v-model:text="desc.nameKey" width="300px" placeholder="国际化字符串键名" />
+                <span class="label">{{ T('page.manageResourcePackage.strain.name') }}</span>
+                <InputBox v-model:text="desc.nameKey" width="300px" :placeholder="T('page.manageResourcePackage.strain.keyPlaceholder')" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">Wiki</span>
-                <InputBox v-model:text="desc.wikiKey" width="300px" placeholder="国际化字符串键名" />
+                <span class="label">{{ T('page.manageResourcePackage.strain.wiki') }}</span>
+                <InputBox v-model:text="desc.wikiKey" width="300px" :placeholder="T('page.manageResourcePackage.strain.keyPlaceholder')" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">品系头像</span>
+                <span class="label">{{ T('page.manageResourcePackage.strain.avatar') }}</span>
                 <div class="wC_HCVCB avatarWrap">
                     <div class="avatarBox" @click="OnUploadClick">
                         <img v-if="imageUrl !== null" :src="imageUrl" class="avatarImg" />
-                        <span v-else class="avatarPlaceholder">无头像<br />点击上传</span>
+                        <span v-else class="avatarPlaceholder">{{ T('page.manageResourcePackage.strain.noAvatar') }}<br />{{ T('page.manageResourcePackage.strain.clickUpload') }}</span>
                     </div>
                     <div class="wR_HC avatarActions">
-                        <Button text="上传头像" variant="outlined" @click="OnUploadClick" />
-                        <Button v-if="imageUrl !== null" text="删除头像" variant="outlined" @click="OnRemoveImage" />
+                        <Button :text="T('page.manageResourcePackage.strain.uploadAvatar')" variant="outlined" @click="OnUploadClick" />
+                        <Button v-if="imageUrl !== null" :text="T('page.manageResourcePackage.strain.removeAvatar')" variant="outlined" @click="OnRemoveImage" />
                     </div>
-                    <span class="avatarTip">推荐尺寸 100 × 100 像素，上传后会自动缩放</span>
+                    <span class="avatarTip">{{ T('page.manageResourcePackage.strain.avatarTip') }}</span>
                 </div>
             </div>
         </div>
@@ -35,6 +35,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import InputBox from '@/Core/Module/GUI/Control_DLL/InputBox/InputBox.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
@@ -45,6 +48,9 @@ const props = defineProps<{
     speciesName: string;
     strainName: string;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const fileInputRef = ref<HTMLInputElement | null>(null);
 const imageUrl = ref<string | null>(null);

@@ -1,10 +1,19 @@
 import { URI } from '@/Core/Module/String_DLL/URI';
 import { EMFileType } from '@/Core/IOC_DLL/Interface/File/IFileSystem';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import IOC from '@/Core/IOC_DLL/IOC';
+import Sym from '@/Core/IOC_DLL/Sym';
 import {
     EMResourceType, SUBSTRATE_FOLDER, type IResourceHandler, type IResourceContext,
     type ITreeNode, EMTreeNodeType
 } from '../Types';
 import { EMSubstrateType, type ISubstrateItem, type TSubstrateSpriteSlot } from './TypeSubstrate';
+
+/** 国际化翻译（延迟获取服务，避免模块加载时 IOC 未就绪） */
+function T(key: string, args?: Record<string, unknown>): string
+{
+    return IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).T(key, args);
+}
 
 /**
  * 基底资源处理器
@@ -14,7 +23,7 @@ export default class SubstrateResourceHandler implements IResourceHandler
 {
     public readonly ResourceType: EMResourceType = EMResourceType.Substrate;
     public readonly FolderName: string = SUBSTRATE_FOLDER;
-    public readonly DisplayName: string = '基底';
+    public get DisplayName(): string { return T('page.manageResourcePackage.handler.substrate'); }
 
     public substrateNameList: string[];
     private itemMap: Map<string, ISubstrateItem>;
@@ -251,7 +260,7 @@ export default class SubstrateResourceHandler implements IResourceHandler
             id: SUBSTRATE_FOLDER,
             type: EMTreeNodeType.SubstrateFolder,
             resourceType: EMResourceType.Substrate,
-            label: '基底',
+            label: T('page.manageResourcePackage.handler.substrate'),
             path: SUBSTRATE_FOLDER,
             children: []
         };

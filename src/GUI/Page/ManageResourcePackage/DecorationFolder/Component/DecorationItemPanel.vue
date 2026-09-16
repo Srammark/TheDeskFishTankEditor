@@ -1,15 +1,15 @@
 <template>
     <div class="wC_HSVS panel">
-        <span class="sumiStudio_font_title-small panelTitle">🏺 装饰物属性：{{ decorationName }}{{ currentPart !== undefined ? ` - ${currentPart.name}` : '' }}</span>
+        <span class="sumiStudio_font_title-small panelTitle">🏺 {{ T('page.manageResourcePackage.decoration.itemTitle', { name: decorationName }) }}{{ currentPart !== undefined ? ` - ${currentPart.name}` : '' }}</span>
 
         <div class="wC_HSVS editArea">
             <div v-if="currentPart === undefined" class="wR_HCVC placeholder">
-                <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">请在左侧树形菜单中选择一个子部件</span>
+                <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">{{ T('page.manageResourcePackage.decoration.selectPartTip') }}</span>
             </div>
             <div v-else class="wC_HSVS editContent">
                 <div class="wR_HC tabBar">
                     <div v-for="tab in tabList" :key="tab.key" class="tab" :class="{ active: currentTab === tab.key }" @click="OnSwitchTab(tab.key)">
-                        {{ tab.label }}
+                        {{ T(tab.label) }}
                     </div>
                 </div>
 
@@ -25,6 +25,9 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, shallowRef } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import DecorationAnimationPanel from './DecorationAnimationPanel.vue';
 import DecorationTabBasic from './DecorationTabBasic.vue';
 import DecorationTabSprite from './DecorationTabSprite.vue';
@@ -53,12 +56,15 @@ const spriteTextureCache = new Map<string | Uint8Array, Texture>();
 const currentSpriteTexture = shallowRef<Texture | null>(null);
 
 const tabList = [
-    { key: 'basic' as const, label: '基础' },
-    { key: 'sprite' as const, label: '精灵图' },
-    { key: 'animation' as const, label: '动画' },
-    { key: 'collider' as const, label: '碰撞体' },
-    { key: 'area' as const, label: '区域' }
+    { key: 'basic' as const, label: 'page.manageResourcePackage.decoration.tabBasic' },
+    { key: 'sprite' as const, label: 'page.manageResourcePackage.decoration.tabSprite' },
+    { key: 'animation' as const, label: 'page.manageResourcePackage.decoration.tabAnimation' },
+    { key: 'collider' as const, label: 'page.manageResourcePackage.decoration.tabCollider' },
+    { key: 'area' as const, label: 'page.manageResourcePackage.decoration.tabArea' }
 ];
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const item = computed<IDecorationItem | undefined>(() => props.data.GetDecorationItem(props.decorationName));
 

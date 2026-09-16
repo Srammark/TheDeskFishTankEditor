@@ -4,15 +4,15 @@
         <div class="propPanel">
             <div v-if="currentCollider" class="propForm">
                 <div class="propRow">
-                    <label>形状</label>
+                    <label>{{ T('page.manageResourcePackage.shapeEditor.shape') }}</label>
                     <select v-model="currentCollider.type" @change="OnShapeChange">
-                        <option :value="EMGeometryType.Circle">圆形</option>
-                        <option :value="EMGeometryType.Rectangle">矩形</option>
-                        <option :value="EMGeometryType.Capsule">胶囊</option>
-                        <option :value="EMGeometryType.Ellipse">椭圆</option>
-                        <option :value="EMGeometryType.Polygon">多边形</option>
-                        <option :value="EMGeometryType.Pie">扇形</option>
-                        <option :value="EMGeometryType.Segment">线段</option>
+                        <option :value="EMGeometryType.Circle">{{ T('page.manageResourcePackage.shapeEditor.circle') }}</option>
+                        <option :value="EMGeometryType.Rectangle">{{ T('page.manageResourcePackage.shapeEditor.rectangle') }}</option>
+                        <option :value="EMGeometryType.Capsule">{{ T('page.manageResourcePackage.shapeEditor.capsule') }}</option>
+                        <option :value="EMGeometryType.Ellipse">{{ T('page.manageResourcePackage.shapeEditor.ellipse') }}</option>
+                        <option :value="EMGeometryType.Polygon">{{ T('page.manageResourcePackage.shapeEditor.polygon') }}</option>
+                        <option :value="EMGeometryType.Pie">{{ T('page.manageResourcePackage.shapeEditor.pie') }}</option>
+                        <option :value="EMGeometryType.Segment">{{ T('page.manageResourcePackage.shapeEditor.segment') }}</option>
                     </select>
                 </div>
                 <div class="propRow">
@@ -24,28 +24,28 @@
                     <input v-model.number="currentCollider.y" type="number" @input="OnPropChange" />
                 </div>
                 <template v-if="currentCollider.type === EMGeometryType.Circle">
-                    <div class="propRow"><label>半径</label><input v-model.number="circleCollider.radius" type="number" min="0" @input="OnPropChange" /></div>
+                    <div class="propRow"><label>{{ T('page.manageResourcePackage.shapeEditor.radius') }}</label><input v-model.number="circleCollider.radius" type="number" min="0" @input="OnPropChange" /></div>
                 </template>
                 <template v-if="currentCollider.type === EMGeometryType.Rectangle || currentCollider.type === EMGeometryType.Ellipse">
-                    <div class="propRow"><label>宽度</label><input v-model.number="rectCollider.width" type="number" min="0" @input="OnPropChange" /></div>
-                    <div class="propRow"><label>高度</label><input v-model.number="rectCollider.height" type="number" min="0" @input="OnPropChange" /></div>
+                    <div class="propRow"><label>{{ T('page.manageResourcePackage.shapeEditor.width') }}</label><input v-model.number="rectCollider.width" type="number" min="0" @input="OnPropChange" /></div>
+                    <div class="propRow"><label>{{ T('page.manageResourcePackage.shapeEditor.height') }}</label><input v-model.number="rectCollider.height" type="number" min="0" @input="OnPropChange" /></div>
                 </template>
                 <template v-if="currentCollider.type === EMGeometryType.Capsule">
-                    <div class="propRow"><label>长度</label><input v-model.number="capsuleCollider.length" type="number" min="0" @input="OnPropChange" /></div>
-                    <div class="propRow"><label>半径</label><input v-model.number="capsuleCollider.radius" type="number" min="0" @input="OnPropChange" /></div>
+                    <div class="propRow"><label>{{ T('page.manageResourcePackage.shapeEditor.length') }}</label><input v-model.number="capsuleCollider.length" type="number" min="0" @input="OnPropChange" /></div>
+                    <div class="propRow"><label>{{ T('page.manageResourcePackage.shapeEditor.radius') }}</label><input v-model.number="capsuleCollider.radius" type="number" min="0" @input="OnPropChange" /></div>
                 </template>
                 <template v-if="currentCollider.type === EMGeometryType.Pie">
-                    <div class="propRow"><label>半径</label><input v-model.number="pieCollider.radius" type="number" min="0" @input="OnPropChange" /></div>
-                    <div class="propRow"><label>扫掠角</label><input v-model.number="pieCollider.sweep" type="number" min="0" max="360" @input="OnPropChange" /></div>
+                    <div class="propRow"><label>{{ T('page.manageResourcePackage.shapeEditor.radius') }}</label><input v-model.number="pieCollider.radius" type="number" min="0" @input="OnPropChange" /></div>
+                    <div class="propRow"><label>{{ T('page.manageResourcePackage.shapeEditor.sweep') }}</label><input v-model.number="pieCollider.sweep" type="number" min="0" max="360" @input="OnPropChange" /></div>
                 </template>
                 <template v-if="currentCollider.type === EMGeometryType.Segment">
-                    <div class="propRow"><label>长度</label><input v-model.number="segmentCollider.length" type="number" min="0" @input="OnPropChange" /></div>
+                    <div class="propRow"><label>{{ T('page.manageResourcePackage.shapeEditor.length') }}</label><input v-model.number="segmentCollider.length" type="number" min="0" @input="OnPropChange" /></div>
                 </template>
                 <template v-if="currentCollider.type === EMGeometryType.Polygon">
                     <div class="vertexPanel">
                         <div class="vertexHeader">
-                            <label>顶点</label>
-                            <span class="vertexHint">左键拖拽 / 右键删除 / 点击边添加</span>
+                            <label>{{ T('page.manageResourcePackage.shapeEditor.vertex') }}</label>
+                            <span class="vertexHint">{{ T('page.manageResourcePackage.shapeEditor.vertexHint') }}</span>
                         </div>
                         <div v-for="(v, i) in polygonCollider.vertics" :key="i" class="vertexRow">
                             <span class="vertexIndex">{{ i }}</span>
@@ -53,16 +53,16 @@
                             <input v-model.number="v[1]" type="number" class="vertexInput" @input="OnVertexInputChange" />
                             <span class="vertexDelete" @click="OnDeleteVertex(i)">×</span>
                         </div>
-                        <Button text="添加顶点" variant="outlined" @click="OnAddVertex" />
+                        <Button :text="T('page.manageResourcePackage.shapeEditor.addVertex')" variant="outlined" @click="OnAddVertex" />
                     </div>
                 </template>
             </div>
             <div v-else class="propForm">
-                <span style="font-size: 12px; color: var(--sumiStudioCore-color-surface-on-20);">当前无形状</span>
+                <span style="font-size: 12px; color: var(--sumiStudioCore-color-surface-on-20);">{{ T('page.manageResourcePackage.shapeEditor.noShape') }}</span>
             </div>
             <div class="wR_HC toolRow">
-                <Button v-if="currentCollider" text="删除" variant="outlined" @click="OnDeleteShape" />
-                <Button v-else text="创建" variant="outlined" @click="OnCreateShape" />
+                <Button v-if="currentCollider" :text="T('page.manageResourcePackage.shapeEditor.delete')" variant="outlined" @click="OnDeleteShape" />
+                <Button v-else :text="T('page.manageResourcePackage.shapeEditor.create')" variant="outlined" @click="OnCreateShape" />
             </div>
         </div>
     </div>
@@ -73,6 +73,9 @@ import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 import { Application, Sprite, Texture, Graphics, Container, Point, TextureSource } from 'pixi.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import { EMGeometryType } from '@/Core/Module/Collision2D_DLL/Geometry/GeometryType';
 import type {
     IColliderData,
@@ -123,6 +126,9 @@ const emit = defineEmits<{
     (e: 'update:shapeList', shapeList: IColliderData[]): void;
     (e: 'select', index: number): void;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const isMultiMode = computed<boolean>(() => props.shapeList !== undefined);
 

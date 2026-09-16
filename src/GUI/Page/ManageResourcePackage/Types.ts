@@ -1,8 +1,17 @@
 import { URI } from '@/Core/Module/String_DLL/URI';
 import type IServiceFile from '@/Core/IOC_DLL/Interface/File/IServiceFile';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
 import { EMGeometryType } from '@/Core/Module/Collision2D_DLL/Geometry/GeometryType';
+import IOC from '@/Core/IOC_DLL/IOC';
+import Sym from '@/Core/IOC_DLL/Sym';
 import { SUBSTRATE_FOLDER } from './Substrate/TypeSubstrate';
 import { GLASS_FOLDER } from './Glass/TypeGlass';
+
+/** 国际化翻译（延迟获取服务，避免模块加载时 IOC 未就绪） */
+function T(key: string, args?: Record<string, unknown>): string
+{
+    return IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).T(key, args);
+}
 
 /** 资源文件夹常量 */
 export const CREATURE_FOLDER = 'CreatureFolder' as const;
@@ -608,13 +617,16 @@ export enum EMDecorationCategory
 }
 
 /** 装饰物分类选项 */
-export const DecorationCategoryOptionList = [
-    { value: EMDecorationCategory.Other, text: '其他' },
-    { value: EMDecorationCategory.Plant, text: '植物' },
-    { value: EMDecorationCategory.Rock, text: '岩石' },
-    { value: EMDecorationCategory.Ornament, text: '摆件' },
-    { value: EMDecorationCategory.Building, text: '建筑' }
-];
+export function GetDecorationCategoryOptionList()
+{
+    return [
+        { value: EMDecorationCategory.Other, text: T('page.manageResourcePackage.options.decorationCategory.other') },
+        { value: EMDecorationCategory.Plant, text: T('page.manageResourcePackage.options.decorationCategory.plant') },
+        { value: EMDecorationCategory.Rock, text: T('page.manageResourcePackage.options.decorationCategory.rock') },
+        { value: EMDecorationCategory.Ornament, text: T('page.manageResourcePackage.options.decorationCategory.ornament') },
+        { value: EMDecorationCategory.Building, text: T('page.manageResourcePackage.options.decorationCategory.building') }
+    ];
+}
 
 /** 装饰物属性 */
 export interface IDecorationItem
@@ -635,57 +647,75 @@ export interface IDecorationItem
 export type TSexFolder = 'Male' | 'Female' | 'Fry';
 
 /** 食性选项 */
-export const DietOptionList = [
-    { value: 'Herbivore' as const, text: '草食性' },
-    { value: 'Carnivore' as const, text: '肉食性' },
-    { value: 'Omnivore' as const, text: '杂食性' },
-    { value: 'Filter' as const, text: '滤食性' },
-    { value: 'Algae' as const, text: '藻类食性' }
-];
+export function GetDietOptionList()
+{
+    return [
+        { value: 'Herbivore' as const, text: T('page.manageResourcePackage.options.diet.herbivore') },
+        { value: 'Carnivore' as const, text: T('page.manageResourcePackage.options.diet.carnivore') },
+        { value: 'Omnivore' as const, text: T('page.manageResourcePackage.options.diet.omnivore') },
+        { value: 'Filter' as const, text: T('page.manageResourcePackage.options.diet.filter') },
+        { value: 'Algae' as const, text: T('page.manageResourcePackage.options.diet.algae') }
+    ];
+}
 
 /** 群居性选项 */
-export const GregariousnessOptionList = [
-    { value: 0 as const, text: '否' },
-    { value: 1 as const, text: '是' }
-];
+export function GetGregariousnessOptionList()
+{
+    return [
+        { value: 0 as const, text: T('page.manageResourcePackage.options.yesNo.no') },
+        { value: 1 as const, text: T('page.manageResourcePackage.options.yesNo.yes') }
+    ];
+}
 
 /** 繁殖方式选项 */
-export const ReproductionOptionList = [
-    { value: 'Oviparous' as const, text: '卵生' },
-    { value: 'Viviparous' as const, text: '胎生' },
-    { value: 'Ovoviviparous' as const, text: '卵胎生' }
-];
+export function GetReproductionOptionList()
+{
+    return [
+        { value: 'Oviparous' as const, text: T('page.manageResourcePackage.options.reproduction.oviparous') },
+        { value: 'Viviparous' as const, text: T('page.manageResourcePackage.options.reproduction.viviparous') },
+        { value: 'Ovoviviparous' as const, text: T('page.manageResourcePackage.options.reproduction.ovoviviparous') }
+    ];
+}
 
 /** 昼夜习性选项 */
-export const DayNightHabitOptionList = [
-    { value: 'Diurnal' as const, text: '日行' },
-    { value: 'Nocturnal' as const, text: '夜行' }
-];
+export function GetDayNightHabitOptionList()
+{
+    return [
+        { value: 'Diurnal' as const, text: T('page.manageResourcePackage.options.dayNight.diurnal') },
+        { value: 'Nocturnal' as const, text: T('page.manageResourcePackage.options.dayNight.nocturnal') }
+    ];
+}
 
 /** 游动模式选项 */
-export const SwimModeOptionList = [
-    { value: EMSwimMode.Anguilliform, text: '鳗形 (Anguilliform)' },
-    { value: EMSwimMode.Subcarangiform, text: '亚鲹形 (Subcarangiform)' },
-    { value: EMSwimMode.Carangiform, text: '鲹形 (Carangiform)' },
-    { value: EMSwimMode.Thunniform, text: '鲔形 (Thunniform)' },
-    { value: EMSwimMode.Ostraciiform, text: '箱鲀形 (Ostraciiform)' },
-    { value: EMSwimMode.Amiiform, text: '弓鳍鱼形 (Amiiform)' },
-    { value: EMSwimMode.Gymnotiform, text: '电鳗形 (Gymnotiform)' },
-    { value: EMSwimMode.Balistiform, text: '鳞鲀形 (Balistiform)' },
-    { value: EMSwimMode.Tetraodontiform, text: '鲀形 (Tetraodontiform)' },
-    { value: EMSwimMode.Rajiform, text: '鳐形 (Rajiform)' },
-    { value: EMSwimMode.Diodontiform, text: '刺鲀形 (Diodontiform)' },
-    { value: EMSwimMode.Labriform, text: '隆头鱼形 (Labriform)' }
-];
+export function GetSwimModeOptionList()
+{
+    return [
+        { value: EMSwimMode.Anguilliform, text: T('page.manageResourcePackage.options.swimMode.anguilliform') },
+        { value: EMSwimMode.Subcarangiform, text: T('page.manageResourcePackage.options.swimMode.subcarangiform') },
+        { value: EMSwimMode.Carangiform, text: T('page.manageResourcePackage.options.swimMode.carangiform') },
+        { value: EMSwimMode.Thunniform, text: T('page.manageResourcePackage.options.swimMode.thunniform') },
+        { value: EMSwimMode.Ostraciiform, text: T('page.manageResourcePackage.options.swimMode.ostraciiform') },
+        { value: EMSwimMode.Amiiform, text: T('page.manageResourcePackage.options.swimMode.amiiform') },
+        { value: EMSwimMode.Gymnotiform, text: T('page.manageResourcePackage.options.swimMode.gymnotiform') },
+        { value: EMSwimMode.Balistiform, text: T('page.manageResourcePackage.options.swimMode.balistiform') },
+        { value: EMSwimMode.Tetraodontiform, text: T('page.manageResourcePackage.options.swimMode.tetraodontiform') },
+        { value: EMSwimMode.Rajiform, text: T('page.manageResourcePackage.options.swimMode.rajiform') },
+        { value: EMSwimMode.Diodontiform, text: T('page.manageResourcePackage.options.swimMode.diodontiform') },
+        { value: EMSwimMode.Labriform, text: T('page.manageResourcePackage.options.swimMode.labriform') }
+    ];
+}
 
 /** 物种类型选项 */
-export const SpeciesCategoryOptionList = [
-    { value: 'Fish' as const, text: '鱼' },
-    { value: 'Shrimp' as const, text: '虾' },
-    { value: 'Crab' as const, text: '蟹' },
-    { value: 'Snail' as const, text: '螺' },
-    { value: 'Bivalve' as const, text: '贝类' }
-];
+export function GetSpeciesCategoryOptionList()
+{
+    return [
+        { value: 'Fish' as const, text: T('page.manageResourcePackage.options.speciesCategory.fish') },
+        { value: 'Shrimp' as const, text: T('page.manageResourcePackage.options.speciesCategory.shrimp') },
+        { value: 'Crab' as const, text: T('page.manageResourcePackage.options.speciesCategory.crab') },
+        { value: 'Snail' as const, text: T('page.manageResourcePackage.options.speciesCategory.snail') },
+        { value: 'Bivalve' as const, text: T('page.manageResourcePackage.options.speciesCategory.bivalve') }
+    ];
+}
 
 /** IETF BCP 47 语言标签选项 */
 export const LanguageTagOptionList = [
@@ -758,33 +788,45 @@ export interface ITreeNode
 }
 
 /** 装饰物区域类型选项 */
-export const DecorationAreaTypeOptionList = [
-    { value: EMDecorationAreaType.Shelter, text: '庇护区' },
-    { value: EMDecorationAreaType.Food, text: '食物区' }
-];
+export function GetDecorationAreaTypeOptionList()
+{
+    return [
+        { value: EMDecorationAreaType.Shelter, text: T('page.manageResourcePackage.options.areaType.shelter') },
+        { value: EMDecorationAreaType.Food, text: T('page.manageResourcePackage.options.areaType.food') }
+    ];
+}
 
 /** 食物类型选项 */
-export const FoodTypeOptionList = [
-    { value: 'Feed' as const, text: '人工饲料' },
-    { value: 'Algae' as const, text: '藻类' },
-    { value: 'Biofilm' as const, text: '生物膜' },
-    { value: 'Plant' as const, text: '植物' },
-    { value: 'Plankton' as const, text: '浮游生物' }
-];
+export function GetFoodTypeOptionList()
+{
+    return [
+        { value: 'Feed' as const, text: T('page.manageResourcePackage.options.foodType.feed') },
+        { value: 'Algae' as const, text: T('page.manageResourcePackage.options.foodType.algae') },
+        { value: 'Biofilm' as const, text: T('page.manageResourcePackage.options.foodType.biofilm') },
+        { value: 'Plant' as const, text: T('page.manageResourcePackage.options.foodType.plant') },
+        { value: 'Plankton' as const, text: T('page.manageResourcePackage.options.foodType.plankton') }
+    ];
+}
 
 /** 装饰物程序化动画类型选项 */
-export const DecorationAnimationTypeOptionList = [
-    { value: EMDecorationTweenAnimationType.None, text: '无' },
-    { value: EMDecorationTweenAnimationType.Sway, text: '摇摆' },
-    { value: EMDecorationTweenAnimationType.Breathe, text: '呼吸' },
-    { value: EMDecorationTweenAnimationType.Rotate, text: '旋转' }
-];
+export function GetDecorationAnimationTypeOptionList()
+{
+    return [
+        { value: EMDecorationTweenAnimationType.None, text: T('page.manageResourcePackage.options.tweenType.none') },
+        { value: EMDecorationTweenAnimationType.Sway, text: T('page.manageResourcePackage.options.tweenType.sway') },
+        { value: EMDecorationTweenAnimationType.Breathe, text: T('page.manageResourcePackage.options.tweenType.breathe') },
+        { value: EMDecorationTweenAnimationType.Rotate, text: T('page.manageResourcePackage.options.tweenType.rotate') }
+    ];
+}
 
 /** 摇摆方向选项 */
-export const SwayAxisOptionList = [
-    { value: 'x' as const, text: '水平' },
-    { value: 'y' as const, text: '垂直' }
-];
+export function GetSwayAxisOptionList()
+{
+    return [
+        { value: 'x' as const, text: T('page.manageResourcePackage.options.axis.x') },
+        { value: 'y' as const, text: T('page.manageResourcePackage.options.axis.y') }
+    ];
+}
 
 /** 编辑器当前选中状态 */
 export interface IEditorSelection

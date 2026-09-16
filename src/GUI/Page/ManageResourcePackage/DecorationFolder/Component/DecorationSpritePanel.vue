@@ -1,9 +1,9 @@
 <template>
     <div class="wC_HSVS panel">
-        <span class="sumiStudio_font_title-small panelTitle">🎨 装饰物精灵图资源：{{ decorationName }}</span>
+        <span class="sumiStudio_font_title-small panelTitle">🎨 {{ T('page.manageResourcePackage.decoration.spritePanelTitle', { name: decorationName }) }}</span>
 
         <div v-if="partList.length === 0" class="wR_HCVC placeholder">
-            <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">该装饰物暂无子部件</span>
+            <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">{{ T('page.manageResourcePackage.decoration.noParts') }}</span>
         </div>
 
         <div v-else class="wC_HSB spriteGrid">
@@ -15,7 +15,7 @@
             >
                 <div class="spriteThumbWrap">
                     <img v-if="GetSpriteDataURL(part.id) !== null" :src="GetSpriteDataURL(part.id)!" class="spriteThumb" />
-                    <span v-else class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">无精灵图</span>
+                    <span v-else class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">{{ T('page.manageResourcePackage.decoration.spritePanelNoSprite') }}</span>
                 </div>
                 <span class="spritePartName">{{ part.name }}</span>
                 <span class="spritePartZ">z={{ part.zIndex }}</span>
@@ -26,6 +26,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import type { IResourcePackageData } from '../../ResourcePackageData';
 import type { IDecorationPart } from '../../Types';
 
@@ -37,6 +40,9 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'selectPart', partID: string): void;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const item = computed(() => props.data.GetDecorationItem(props.decorationName));
 const partList = computed<IDecorationPart[]>(() =>

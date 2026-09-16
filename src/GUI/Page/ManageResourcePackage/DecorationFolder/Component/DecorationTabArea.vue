@@ -2,11 +2,11 @@
     <div class="wC_HSVS tabContent" style="min-height: 0; height: 100%;">
         <div v-if="isFrameAnimation" class="wR_HC frameNav">
             <span class="frameNavBtn" @click="OnPrevFrame">←</span>
-            <span class="frameNavLabel">区域 第 {{ currentFrameIndex + 1 }} / {{ totalFrames }} 帧{{ currentFrameIndex === 0 ? '（默认形状）' : '' }}</span>
+            <span class="frameNavLabel">{{ T('page.manageResourcePackage.decoration.areaFrameNav', { current: currentFrameIndex + 1, total: totalFrames }) }}{{ currentFrameIndex === 0 ? T('page.manageResourcePackage.decoration.defaultShapeTag') : '' }}</span>
             <span class="frameNavBtn" @click="OnNextFrame">→</span>
         </div>
         <div class="wR_HC areaActions">
-            <Button text="添加区域" variant="outlined" @click="OnAdd" />
+            <Button :text="T('page.manageResourcePackage.decoration.addArea')" variant="outlined" @click="OnAdd" />
         </div>
         <div class="wR_HS" style="min-height: 0; gap: 16px; flex: 1; flex-wrap: nowrap;">
             <div class="wC_HC" style="width: 300px; min-height: 0; overflow: auto; gap: 8px;">
@@ -16,34 +16,34 @@
                         <span class="areaDelete" @click.stop="OnRemove(index)">×</span>
                     </div>
                     <div class="propRow">
-                        <label>类型</label>
-                        <SelectBox :value="area.area.type" :list="DecorationAreaTypeOptionList" style="flex: 1;" @update:value="OnTypeChange($event, index)" />
+                        <label>{{ T('page.manageResourcePackage.decoration.areaType') }}</label>
+                        <SelectBox :value="area.area.type" :list="GetDecorationAreaTypeOptionList()" style="flex: 1;" @update:value="OnTypeChange($event, index)" />
                     </div>
                     <div v-if="area.area.type === EMDecorationAreaType.Shelter" class="wC_HS" style="gap: 4px;">
-                        <div class="propRow"><label>隐蔽度</label><NumericInlineInput v-model="(area.area as IDecorationAreaShelter).concealment" :precision="1" :min="0" :max="1" style="flex: 1;" @change="Persist" /></div>
-                        <div class="propRow"><label>休息效率</label><NumericInlineInput v-model="(area.area as IDecorationAreaShelter).restEfficiency" :precision="1" :min="0" :max="1" style="flex: 1;" @change="Persist" /></div>
-                        <div class="propRow"><label>舒适度</label><NumericInlineInput v-model="(area.area as IDecorationAreaShelter).comfort" :precision="1" :min="0" :max="1" style="flex: 1;" @change="Persist" /></div>
-                        <div class="propRow"><label>最大鱼数</label><NumericInlineInput v-model="(area.area as IDecorationAreaShelter).maxFishCount" :precision="0" :min="0" style="flex: 1;" @change="Persist" /></div>
+                        <div class="propRow"><label>{{ T('page.manageResourcePackage.decoration.concealment') }}</label><NumericInlineInput v-model="(area.area as IDecorationAreaShelter).concealment" :precision="1" :min="0" :max="1" style="flex: 1;" @change="Persist" /></div>
+                        <div class="propRow"><label>{{ T('page.manageResourcePackage.decoration.restEfficiency') }}</label><NumericInlineInput v-model="(area.area as IDecorationAreaShelter).restEfficiency" :precision="1" :min="0" :max="1" style="flex: 1;" @change="Persist" /></div>
+                        <div class="propRow"><label>{{ T('page.manageResourcePackage.decoration.comfort') }}</label><NumericInlineInput v-model="(area.area as IDecorationAreaShelter).comfort" :precision="1" :min="0" :max="1" style="flex: 1;" @change="Persist" /></div>
+                        <div class="propRow"><label>{{ T('page.manageResourcePackage.decoration.maxFishCount') }}</label><NumericInlineInput v-model="(area.area as IDecorationAreaShelter).maxFishCount" :precision="0" :min="0" style="flex: 1;" @change="Persist" /></div>
                     </div>
                     <div v-if="area.area.type === EMDecorationAreaType.Food" class="wC_HS" style="gap: 4px;">
-                        <div class="propRow"><label>食物类型</label><SelectBox v-model:value="(area.area as IDecorationAreaFood).foodType" :list="FoodTypeOptionList" style="flex: 1;" @update:value="Persist" /></div>
-                        <div class="propRow"><label>生成速率</label><NumericInlineInput v-model="(area.area as IDecorationAreaFood).foodPerSecond" :precision="1" :min="0" style="flex: 1;" @change="Persist" /></div>
-                        <div class="propRow"><label>最大食物</label><NumericInlineInput v-model="(area.area as IDecorationAreaFood).maxFood" :precision="0" :min="0" style="flex: 1;" @change="Persist" /></div>
-                        <div class="propRow"><label>初始食物</label><NumericInlineInput v-model="(area.area as IDecorationAreaFood).initialFood" :precision="0" :min="0" style="flex: 1;" @change="Persist" /></div>
-                        <div class="propRow"><label>显示食物</label><input type="checkbox" v-model="(area.area as IDecorationAreaFood).isShowFood" @change="Persist" /></div>
+                        <div class="propRow"><label>{{ T('page.manageResourcePackage.decoration.foodType') }}</label><SelectBox v-model:value="(area.area as IDecorationAreaFood).foodType" :list="GetFoodTypeOptionList()" style="flex: 1;" @update:value="Persist" /></div>
+                        <div class="propRow"><label>{{ T('page.manageResourcePackage.decoration.foodPerSecond') }}</label><NumericInlineInput v-model="(area.area as IDecorationAreaFood).foodPerSecond" :precision="1" :min="0" style="flex: 1;" @change="Persist" /></div>
+                        <div class="propRow"><label>{{ T('page.manageResourcePackage.decoration.maxFood') }}</label><NumericInlineInput v-model="(area.area as IDecorationAreaFood).maxFood" :precision="0" :min="0" style="flex: 1;" @change="Persist" /></div>
+                        <div class="propRow"><label>{{ T('page.manageResourcePackage.decoration.initialFood') }}</label><NumericInlineInput v-model="(area.area as IDecorationAreaFood).initialFood" :precision="0" :min="0" style="flex: 1;" @change="Persist" /></div>
+                        <div class="propRow"><label>{{ T('page.manageResourcePackage.decoration.isShowFood') }}</label><input type="checkbox" v-model="(area.area as IDecorationAreaFood).isShowFood" @change="Persist" /></div>
                     </div>
                     <div v-if="isFrameAnimation" class="frameStateRow">
                         <label class="visibleToggle">
                             <input type="checkbox" :checked="IsAreaVisibleInFrame(area.id)" @change="OnVisibleChange(area.id, $event)" />
-                            本帧显示
+                            {{ T('page.manageResourcePackage.decoration.visibleInFrame') }}
                         </label>
-                        <span v-if="HasShapeOverride(area.id)" class="overrideTag" title="该帧形状已被覆盖，点击重置为基础形状" @click.stop="OnResetShape(area.id)">已覆盖形状 ×</span>
+                        <span v-if="HasShapeOverride(area.id)" class="overrideTag" :title="T('page.manageResourcePackage.decoration.overrideTip')" @click.stop="OnResetShape(area.id)">{{ T('page.manageResourcePackage.decoration.areaOverridden') }}</span>
                     </div>
                 </div>
             </div>
             <ShapeEditor v-if="currentArea !== undefined" class="shapeEditorFlex" :texture="editorTexture" :viewport="viewport" :shape="currentShape" :color="GetAreaColor(currentArea.area.type)" :animation-transform="animationTransform" @update:shape="OnShapeUpdate" />
             <div v-else class="shapeEditorFlex placeholder">
-                <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">请添加或选择一个区域</span>
+                <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">{{ T('page.manageResourcePackage.decoration.selectAreaTip') }}</span>
             </div>
         </div>
     </div>
@@ -51,6 +51,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import InputBox from '@/Core/Module/GUI/Control_DLL/InputBox/InputBox.vue';
 import SelectBox from '@/Core/Module/GUI/Control_DLL/SelectBox/SelectBox.vue';
@@ -58,8 +61,8 @@ import NumericInlineInput from '@/Core/Module/GUI/Control_DLL/NumericInlineInput
 import ShapeEditor, { type IShapeEditorViewport } from '../../Common/Component/ShapeEditor.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
 import {
-    EMDecorationAnimationMode, EMDecorationAreaType, DecorationAreaTypeOptionList,
-    FoodTypeOptionList,
+    EMDecorationAnimationMode, EMDecorationAreaType, GetDecorationAreaTypeOptionList,
+    GetFoodTypeOptionList,
     type IDecorationPart, type IDecorationAreaConfig, type IDecorationAreaShelter,
     type IDecorationAreaFood, type IDecorationFrameData,
     type IDecorationAreaFrameOverride,
@@ -82,6 +85,9 @@ const emit = defineEmits<{
     (e: 'update'): void;
     (e: 'selectFrame', index: number): void;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const currentIndex = ref<number | undefined>(undefined);
 
@@ -173,7 +179,7 @@ function OnAdd(): void
 {
     const newArea: IDecorationAreaConfig = {
         id: GenerateID(),
-        name: `区域 ${areaList.value.length + 1}`,
+        name: T('page.manageResourcePackage.decoration.defaultAreaName', { index: areaList.value.length + 1 }),
         area: { type: EMDecorationAreaType.Shelter, concealment: 0.5, restEfficiency: 0.5, comfort: 0.5, maxFishCount: 3 },
         collider: { type: EMGeometryType.Rectangle, x: -20, y: -20, width: 40, height: 40 }
     };

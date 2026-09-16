@@ -1,10 +1,19 @@
 import { URI } from '@/Core/Module/String_DLL/URI';
 import { EMFileType } from '@/Core/IOC_DLL/Interface/File/IFileSystem';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import IOC from '@/Core/IOC_DLL/IOC';
+import Sym from '@/Core/IOC_DLL/Sym';
 import {
     EMResourceType, DECORATION_FOLDER, EMDecorationAnimationMode, EMDecorationCategory, type IResourceHandler, type IResourceContext,
     type ITreeNode, EMTreeNodeType, type IDecorationItem, type IDecorationPart, type IColliderData,
     type IDecorationColliderConfig, type IDecorationFrameAnimation, type IDecorationFrameData
 } from '../Types';
+
+/** 国际化翻译（延迟获取服务，避免模块加载时 IOC 未就绪） */
+function T(key: string, args?: Record<string, unknown>): string
+{
+    return IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).T(key, args);
+}
 
 /**
  * 装饰物资源处理器
@@ -14,7 +23,7 @@ export default class DecorationResourceHandler implements IResourceHandler
 {
     public readonly ResourceType: EMResourceType = EMResourceType.Decoration;
     public readonly FolderName: string = DECORATION_FOLDER;
-    public readonly DisplayName: string = '装饰物';
+    public get DisplayName(): string { return T('page.manageResourcePackage.handler.decoration'); }
 
     public decorationNameList: string[];
     private itemMap: Map<string, IDecorationItem>;
@@ -277,7 +286,7 @@ export default class DecorationResourceHandler implements IResourceHandler
             id: DECORATION_FOLDER,
             type: EMTreeNodeType.DecorationFolder,
             resourceType: EMResourceType.Decoration,
-            label: '装饰物',
+            label: T('page.manageResourcePackage.handler.decoration'),
             path: DECORATION_FOLDER,
             children: []
         };
@@ -313,7 +322,7 @@ export default class DecorationResourceHandler implements IResourceHandler
                         id: `${DECORATION_FOLDER}/${decorationName}/sprite`,
                         type: EMTreeNodeType.DecorationSpriteFolder,
                         resourceType: EMResourceType.Decoration,
-                        label: '精灵图资源',
+                        label: T('page.manageResourcePackage.handler.spriteResource'),
                         path: `${DECORATION_FOLDER}/${decorationName}/sprite`,
                         decorationName
                     }
@@ -353,7 +362,7 @@ export default class DecorationResourceHandler implements IResourceHandler
                 });
                 return {
                     id: part.id ?? this.GenerateID(),
-                    name: part.name ?? '未命名部件',
+                    name: part.name ?? T('page.manageResourcePackage.handler.unnamedPart'),
                     zIndex: part.zIndex ?? 0,
                     sprite: part.sprite,
                     animationMode: part.animationMode ?? EMDecorationAnimationMode.None,

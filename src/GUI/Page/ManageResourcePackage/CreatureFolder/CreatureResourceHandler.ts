@@ -1,5 +1,8 @@
 import { URI } from '@/Core/Module/String_DLL/URI';
 import { EMFileType } from '@/Core/IOC_DLL/Interface/File/IFileSystem';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import IOC from '@/Core/IOC_DLL/IOC';
+import Sym from '@/Core/IOC_DLL/Sym';
 import {
     EMResourceType, CREATURE_FOLDER, STRAIN_FOLDER, MS_PER_DAY, type IResourceHandler, type IResourceContext,
     type ITreeNode, EMTreeNodeType, type ISpeciesDescription, type IStrainDescription,
@@ -7,9 +10,15 @@ import {
     type IFishItem, type IShrimpItem, type ICrabItem, type ISnailItem, type IBivalveItem,
     EMSwimMode,
     type TSpriteSize, type TSpriteAction, type TSexFolder, type ISizeConfig, type IFrameData, type IActionData, type IColliderData, type TColliderSlot,
-    SpeciesCategoryOptionList
+    GetSpeciesCategoryOptionList
 } from '../Types';
 import * as SpriteSheetUtil from '../SpriteSheetUtil';
+
+/** 国际化翻译（延迟获取服务，避免模块加载时 IOC 未就绪） */
+function T(key: string, args?: Record<string, unknown>): string
+{
+    return IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).T(key, args);
+}
 
 /**
  * 生物资源处理器
@@ -20,7 +29,7 @@ export default class CreatureResourceHandler implements IResourceHandler
 {
     public readonly ResourceType: EMResourceType = EMResourceType.Creature;
     public readonly FolderName: string = CREATURE_FOLDER;
-    public readonly DisplayName: string = '生物';
+    public get DisplayName(): string { return T('page.manageResourcePackage.handler.creature'); }
 
     /** 物种 key 列表，格式 `${category}/${speciesName}` */
     public speciesKeyList: string[];
@@ -661,7 +670,7 @@ export default class CreatureResourceHandler implements IResourceHandler
             id: CREATURE_FOLDER,
             type: EMTreeNodeType.CreatureFolder,
             resourceType: EMResourceType.Creature,
-            label: '生物',
+            label: T('page.manageResourcePackage.handler.creature'),
             path: CREATURE_FOLDER,
             children: []
         };
@@ -675,7 +684,7 @@ export default class CreatureResourceHandler implements IResourceHandler
                 continue;
             }
 
-            const categoryLabel = SpeciesCategoryOptionList.find(o => o.value === category)?.text ?? category;
+            const categoryLabel = GetSpeciesCategoryOptionList().find(o => o.value === category)?.text ?? category;
             const categoryNode: ITreeNode = {
                 id: `${CREATURE_FOLDER}/${category}`,
                 type: EMTreeNodeType.CreatureCategory,
@@ -700,7 +709,7 @@ export default class CreatureResourceHandler implements IResourceHandler
                             id: `${CREATURE_FOLDER}/${speciesKey}/desc`,
                             type: EMTreeNodeType.SpeciesDesc,
                             resourceType: EMResourceType.Creature,
-                            label: '物种描述',
+                            label: T('page.manageResourcePackage.handler.speciesDesc'),
                             path: `${CREATURE_FOLDER}/${speciesKey}/desc`,
                             speciesName: speciesKey
                         }
@@ -728,7 +737,7 @@ export default class CreatureResourceHandler implements IResourceHandler
                             id: `${CREATURE_FOLDER}/${speciesKey}/${strainName}/${sexName}`,
                             type: EMTreeNodeType.Sex,
                             resourceType: EMResourceType.Creature,
-                            label: sexName === 'Male' ? '雄性' : sexName === 'Female' ? '雌性' : '鱼苗',
+                            label: sexName === 'Male' ? T('page.manageResourcePackage.handler.sexMale') : sexName === 'Female' ? T('page.manageResourcePackage.handler.sexFemale') : T('page.manageResourcePackage.handler.sexFry'),
                             path: `${CREATURE_FOLDER}/${speciesKey}/${strainName}/${sexName}`,
                             speciesName: speciesKey,
                             strainName,
@@ -738,7 +747,7 @@ export default class CreatureResourceHandler implements IResourceHandler
                                     id: `${CREATURE_FOLDER}/${speciesKey}/${strainName}/${sexName}/item`,
                                     type: EMTreeNodeType.ItemJson,
                                     resourceType: EMResourceType.Creature,
-                                    label: '生物属性',
+                                    label: T('page.manageResourcePackage.handler.creatureItem'),
                                     path: `${CREATURE_FOLDER}/${speciesKey}/${strainName}/${sexName}/item`,
                                     speciesName: speciesKey,
                                     strainName,
@@ -748,7 +757,7 @@ export default class CreatureResourceHandler implements IResourceHandler
                                     id: `${CREATURE_FOLDER}/${speciesKey}/${strainName}/${sexName}/sprite`,
                                     type: EMTreeNodeType.SpriteFolder,
                                     resourceType: EMResourceType.Creature,
-                                    label: '精灵图资源',
+                                    label: T('page.manageResourcePackage.handler.spriteResource'),
                                     path: `${CREATURE_FOLDER}/${speciesKey}/${strainName}/${sexName}/sprite`,
                                     speciesName: speciesKey,
                                     strainName,

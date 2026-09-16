@@ -1,75 +1,75 @@
 <template>
     <div class="wC_HSVS panel">
-        <span class="sumiStudio_font_title-small panelTitle">🪨 基底编辑：{{ substrateName }}</span>
+        <span class="sumiStudio_font_title-small panelTitle">🪨 {{ T('page.manageResourcePackage.substrate.title', { name: substrateName }) }}</span>
 
         <div class="wC_HSB basicInfo">
             <div class="propRow">
-                <label>名称 Key</label>
-                <input :value="item?.nameKey" type="text" placeholder="例如 substrate.sand.name" @change="OnUpdateItemField($event, 'nameKey')" />
+                <label>{{ T('page.manageResourcePackage.substrate.nameKey') }}</label>
+                <input :value="item?.nameKey" type="text" :placeholder="T('page.manageResourcePackage.substrate.nameKeyPlaceholder')" @change="OnUpdateItemField($event, 'nameKey')" />
             </div>
             <div class="propRow">
-                <label>简介 Key</label>
-                <input :value="item?.descriptionKey" type="text" placeholder="例如 substrate.sand.description" @change="OnUpdateItemField($event, 'descriptionKey')" />
+                <label>{{ T('page.manageResourcePackage.substrate.descriptionKey') }}</label>
+                <input :value="item?.descriptionKey" type="text" :placeholder="T('page.manageResourcePackage.substrate.descriptionKeyPlaceholder')" @change="OnUpdateItemField($event, 'descriptionKey')" />
             </div>
             <div class="propRow">
-                <label>类型</label>
-                <SelectBox width="200px" v-model:value="type" :list="SubstrateTypeOptionList" placeholder="请选择类型" />
+                <label>{{ T('page.manageResourcePackage.substrate.type') }}</label>
+                <SelectBox width="200px" v-model:value="type" :list="GetSubstrateTypeOptionList()" :placeholder="T('page.manageResourcePackage.substrate.typePlaceholder')" />
             </div>
         </div>
 
         <div class="wC_HS thumbnailRow">
-            <span class="thumbnailLabel">列表头像</span>
+            <span class="thumbnailLabel">{{ T('page.manageResourcePackage.substrate.thumbnail') }}</span>
             <div class="wC_HCVCB thumbnailWrap">
                 <div class="avatarBox" @click="OnUploadThumbnailClick">
                     <img v-if="thumbnailUrl !== null" :src="thumbnailUrl" class="avatarImg" />
-                    <span v-else class="avatarPlaceholder">无头像<br />点击上传</span>
+                    <span v-else class="avatarPlaceholder">{{ T('page.manageResourcePackage.substrate.noAvatar') }}<br />{{ T('page.manageResourcePackage.substrate.clickUpload') }}</span>
                 </div>
                 <div class="wR_HC thumbnailActions">
-                    <Button text="上传头像" variant="outlined" @click="OnUploadThumbnailClick" />
-                    <Button v-if="thumbnailUrl !== null" text="删除头像" variant="outlined" @click="OnRemoveThumbnail" />
+                    <Button :text="T('page.manageResourcePackage.substrate.uploadAvatar')" variant="outlined" @click="OnUploadThumbnailClick" />
+                    <Button v-if="thumbnailUrl !== null" :text="T('page.manageResourcePackage.substrate.removeAvatar')" variant="outlined" @click="OnRemoveThumbnail" />
                 </div>
-                <span class="thumbnailTip">推荐尺寸 100 × 100 像素</span>
+                <span class="thumbnailTip">{{ T('page.manageResourcePackage.substrate.thumbnailTip') }}</span>
             </div>
         </div>
 
         <div class="wC_HSB textureRow">
             <div class="wC_HCVCB textureCard">
-                <span class="textureTitle">俯视图</span>
+                <span class="textureTitle">{{ T('page.manageResourcePackage.substrate.topView') }}</span>
                 <div class="texturePreview" @click="OnUploadSpriteClick('top')">
                     <img v-if="topUrl !== null" :src="topUrl" class="textureImg" />
-                    <span v-else class="texturePlaceholder">点击上传俯视图</span>
+                    <span v-else class="texturePlaceholder">{{ T('page.manageResourcePackage.substrate.uploadTopView') }}</span>
                 </div>
                 <div class="propRow small">
-                    <label>宽</label>
+                    <label>{{ T('page.manageResourcePackage.substrate.width') }}</label>
                     <span class="readOnlyValue">{{ item?.topView.width ?? 0 }} px</span>
                 </div>
                 <div class="propRow small">
-                    <label>高</label>
+                    <label>{{ T('page.manageResourcePackage.substrate.height') }}</label>
                     <span class="readOnlyValue">{{ item?.topView.height ?? 0 }} px</span>
                 </div>
                 <div class="wR_HC textureActions">
-                    <Button text="上传" variant="outlined" @click="OnUploadSpriteClick('top')" />
-                    <Button v-if="topUrl !== null" text="删除" variant="outlined" @click="OnRemoveSprite('top')" />
+                    <Button :text="T('page.manageResourcePackage.substrate.upload')" variant="outlined" @click="OnUploadSpriteClick('top')" />
+                    <Button v-if="topUrl !== null" :text="T('page.manageResourcePackage.substrate.remove')" variant="outlined" @click="OnRemoveSprite('top')" />
                 </div>
             </div>
 
             <div class="wC_HCVCB textureCard">
-                <span class="textureTitle">正视图（剖面）</span>
+                <span class="textureTitle">{{ T('page.manageResourcePackage.substrate.frontView') }}</span>
                 <div class="texturePreview" @click="OnUploadSpriteClick('front')">
                     <img v-if="frontUrl !== null" :src="frontUrl" class="textureImg" />
-                    <span v-else class="texturePlaceholder">点击上传正视图</span>
+                    <span v-else class="texturePlaceholder">{{ T('page.manageResourcePackage.substrate.uploadFrontView') }}</span>
                 </div>
                 <div class="propRow small">
-                    <label>宽</label>
+                    <label>{{ T('page.manageResourcePackage.substrate.width') }}</label>
                     <span class="readOnlyValue">{{ item?.frontView.width ?? 0 }} px</span>
                 </div>
                 <div class="propRow small">
-                    <label>高</label>
+                    <label>{{ T('page.manageResourcePackage.substrate.height') }}</label>
                     <span class="readOnlyValue">{{ item?.frontView.height ?? 0 }} px</span>
                 </div>
                 <div class="wR_HC textureActions">
-                    <Button text="上传" variant="outlined" @click="OnUploadSpriteClick('front')" />
-                    <Button v-if="frontUrl !== null" text="删除" variant="outlined" @click="OnRemoveSprite('front')" />
+                    <Button :text="T('page.manageResourcePackage.substrate.upload')" variant="outlined" @click="OnUploadSpriteClick('front')" />
+                    <Button v-if="frontUrl !== null" :text="T('page.manageResourcePackage.substrate.remove')" variant="outlined" @click="OnRemoveSprite('front')" />
                 </div>
             </div>
         </div>
@@ -80,15 +80,21 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import SelectBox from '@/Core/Module/GUI/Control_DLL/SelectBox/SelectBox.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
-import { EMSubstrateType, SubstrateTypeOptionList, type ISubstrateItem, type TSubstrateSpriteSlot } from '../TypeSubstrate';
+import { EMSubstrateType, GetSubstrateTypeOptionList, type ISubstrateItem, type TSubstrateSpriteSlot } from '../TypeSubstrate';
 
 const props = defineProps<{
     data: IResourcePackageData;
     substrateName: string;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const thumbnailInputRef = ref<HTMLInputElement | null>(null);
 const spriteInputRef = ref<HTMLInputElement | null>(null);

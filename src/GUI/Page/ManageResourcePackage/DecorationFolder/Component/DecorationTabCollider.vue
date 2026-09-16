@@ -2,26 +2,26 @@
     <div class="wC_HSVS tabContent">
         <div v-if="isFrameAnimation" class="wR_HC frameNav">
             <span class="frameNavBtn" @click="OnPrevFrame">←</span>
-            <span class="frameNavLabel">碰撞体 第 {{ currentFrameIndex + 1 }} / {{ totalFrames }} 帧{{ currentFrameIndex === 0 ? '（默认配置）' : '' }}</span>
+            <span class="frameNavLabel">{{ T('page.manageResourcePackage.decoration.colliderFrameNav', { current: currentFrameIndex + 1, total: totalFrames }) }}{{ currentFrameIndex === 0 ? T('page.manageResourcePackage.decoration.defaultConfigTag') : '' }}</span>
             <span class="frameNavBtn" @click="OnNextFrame">→</span>
         </div>
         <div class="wR_HC colliderActions">
-            <Button text="添加碰撞体" variant="outlined" @click="OnAdd" />
+            <Button :text="T('page.manageResourcePackage.decoration.addCollider')" variant="outlined" @click="OnAdd" />
         </div>
         <div class="editorWrap">
             <div class="colliderList">
                 <div v-for="(config, index) in colliderConfigList" :key="config.id" class="colliderCard" :class="{ active: currentIndex === index }" @click="OnSelect(index)">
                     <span class="colliderIndex">{{ index + 1 }}</span>
                     <select :value="GetEffectiveShape(config).type" @change="OnTypeChange($event, index)">
-                        <option :value="EMGeometryType.Circle">圆形</option>
-                        <option :value="EMGeometryType.Rectangle">矩形</option>
-                        <option :value="EMGeometryType.Capsule">胶囊</option>
-                        <option :value="EMGeometryType.Ellipse">椭圆</option>
-                        <option :value="EMGeometryType.Polygon">多边形</option>
-                        <option :value="EMGeometryType.Pie">扇形</option>
-                        <option :value="EMGeometryType.Segment">线段</option>
+                        <option :value="EMGeometryType.Circle">{{ T('page.manageResourcePackage.shapeEditor.circle') }}</option>
+                        <option :value="EMGeometryType.Rectangle">{{ T('page.manageResourcePackage.shapeEditor.rectangle') }}</option>
+                        <option :value="EMGeometryType.Capsule">{{ T('page.manageResourcePackage.shapeEditor.capsule') }}</option>
+                        <option :value="EMGeometryType.Ellipse">{{ T('page.manageResourcePackage.shapeEditor.ellipse') }}</option>
+                        <option :value="EMGeometryType.Polygon">{{ T('page.manageResourcePackage.shapeEditor.polygon') }}</option>
+                        <option :value="EMGeometryType.Pie">{{ T('page.manageResourcePackage.shapeEditor.pie') }}</option>
+                        <option :value="EMGeometryType.Segment">{{ T('page.manageResourcePackage.shapeEditor.segment') }}</option>
                     </select>
-                    <span v-if="HasShapeOverride(config.id)" class="overrideTag" title="该帧形状已被覆盖，点击重置为基础形状" @click.stop="OnResetShape(config.id)">已覆盖 ×</span>
+                    <span v-if="HasShapeOverride(config.id)" class="overrideTag" :title="T('page.manageResourcePackage.decoration.overrideTip')" @click.stop="OnResetShape(config.id)">{{ T('page.manageResourcePackage.decoration.overridden') }}</span>
                     <span class="colliderDelete" @click.stop="OnRemove(index)">×</span>
                 </div>
             </div>
@@ -32,6 +32,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import ShapeEditor, { type IShapeEditorViewport } from '../../Common/Component/ShapeEditor.vue';
 import type { IResourcePackageData } from '../../ResourcePackageData';
@@ -57,6 +60,9 @@ const emit = defineEmits<{
     (e: 'update'): void;
     (e: 'selectFrame', index: number): void;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 
 const currentIndex = ref<number | undefined>(undefined);
 

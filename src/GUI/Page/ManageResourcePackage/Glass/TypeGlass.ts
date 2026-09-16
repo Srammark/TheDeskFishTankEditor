@@ -1,6 +1,16 @@
 /** 玻璃资源文件夹名 */
 export const GLASS_FOLDER = 'Glass' as const;
 
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import IOC from '@/Core/IOC_DLL/IOC';
+import Sym from '@/Core/IOC_DLL/Sym';
+
+/** 国际化翻译（延迟获取服务，避免模块加载时 IOC 未就绪） */
+function T(key: string, args?: Record<string, unknown>): string
+{
+    return IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).T(key, args);
+}
+
 /** 默认整体颜色 */
 export const GLASS_DEFAULT_OVERALL_COLOR = '#78bbd4';
 
@@ -22,14 +32,17 @@ export interface IGlassPartMeta
 }
 
 /** 玻璃部件元数据列表 */
-export const GlassPartMetaList: IGlassPartMeta[] = [
-    { key: 'LeftSurface', label: '左侧玻璃面', defaultAlpha: 170 },
-    { key: 'BackSurface', label: '背板玻璃面', defaultAlpha: 200 },
-    { key: 'FrontSurface', label: '正面玻璃面', defaultAlpha: 170 },
-    { key: 'RightSurface', label: '右侧玻璃面', defaultAlpha: 170 },
-    { key: 'BottomSurface', label: '底部玻璃面', defaultAlpha: 210 },
-    { key: 'GlassEdge', label: '玻璃边缘', defaultAlpha: 170 }
-];
+export function GetGlassPartMetaList(): IGlassPartMeta[]
+{
+    return [
+        { key: 'LeftSurface', label: T('page.manageResourcePackage.glass.partLeftSurface'), defaultAlpha: 170 },
+        { key: 'BackSurface', label: T('page.manageResourcePackage.glass.partBackSurface'), defaultAlpha: 200 },
+        { key: 'FrontSurface', label: T('page.manageResourcePackage.glass.partFrontSurface'), defaultAlpha: 170 },
+        { key: 'RightSurface', label: T('page.manageResourcePackage.glass.partRightSurface'), defaultAlpha: 170 },
+        { key: 'BottomSurface', label: T('page.manageResourcePackage.glass.partBottomSurface'), defaultAlpha: 210 },
+        { key: 'GlassEdge', label: T('page.manageResourcePackage.glass.partGlassEdge'), defaultAlpha: 170 }
+    ];
+}
 
 /** 玻璃部件类型 */
 export enum EMGlassPartType
@@ -41,10 +54,13 @@ export enum EMGlassPartType
 }
 
 /** 玻璃部件类型选项 */
-export const GlassPartTypeOptionList = [
-    { value: EMGlassPartType.Color, text: '颜色' },
-    { value: EMGlassPartType.Texture, text: '纹理' }
-];
+export function GetGlassPartTypeOptionList()
+{
+    return [
+        { value: EMGlassPartType.Color, text: T('page.manageResourcePackage.options.glassPartType.color') },
+        { value: EMGlassPartType.Texture, text: T('page.manageResourcePackage.options.glassPartType.texture') }
+    ];
+}
 
 /** 纹理填充模式 */
 export enum EMGlassTextureMode
@@ -56,10 +72,13 @@ export enum EMGlassTextureMode
 }
 
 /** 纹理填充模式选项 */
-export const GlassTextureModeOptionList = [
-    { value: EMGlassTextureMode.Stretch, text: '拉伸' },
-    { value: EMGlassTextureMode.Tile, text: '平铺' }
-];
+export function GetGlassTextureModeOptionList()
+{
+    return [
+        { value: EMGlassTextureMode.Stretch, text: T('page.manageResourcePackage.options.glassTextureMode.stretch') },
+        { value: EMGlassTextureMode.Tile, text: T('page.manageResourcePackage.options.glassTextureMode.tile') }
+    ];
+}
 
 /** 玻璃单部件数据 */
 export interface IGlassPart
@@ -117,7 +136,7 @@ export function CreateDefaultGlassPart(): IGlassPart
 export function CreateDefaultGlassStyleItem(styleName: string): IGlassStyleItem
 {
     const partMap = {} as Record<TGlassPartKey, IGlassPart>;
-    for (const meta of GlassPartMetaList)
+    for (const meta of GetGlassPartMetaList())
     {
         partMap[meta.key] = {
             type: EMGlassPartType.Color,

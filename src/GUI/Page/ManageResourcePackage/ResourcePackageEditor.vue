@@ -3,13 +3,13 @@
         <div class="wR_HC toolBar">
             <div class="wR_HSVC leftTools" style="width: 50%;">
                 <Button icon-path="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" variant="text" @click="OnBack" />
-                <span class="sumiStudio_font_title-small" style="color: var(--sumiStudioCore-color-surface-on);">🎒 {{ packageData.packageInfo.name || '资源扩展包编辑器' }}</span>
+                <span class="sumiStudio_font_title-small" style="color: var(--sumiStudioCore-color-surface-on);">🎒 {{ packageData.packageInfo.name || T('page.manageResourcePackage.editor.defaultTitle') }}</span>
             </div>
             <div class="wR_HEVC rightTools" style="width: 50%;">
                 <input ref="importInputRef" type="file" webkitdirectory directory multiple style="display: none;" @change="OnImport" />
-                <Button text="导入" variant="outlined" @click="OnClickImport" />
-                <Button text="导出" variant="outlined" @click="OnExport" />
-                <Button text="保存" @click="OnSave" />
+                <Button :text="T('page.manageResourcePackage.editor.import')" variant="outlined" @click="OnClickImport" />
+                <Button :text="T('page.manageResourcePackage.editor.export')" variant="outlined" @click="OnExport" />
+                <Button :text="T('page.manageResourcePackage.editor.save')" @click="OnSave" />
             </div>
         </div>
         <div class="wR_HC editorBody">
@@ -43,7 +43,7 @@
                 <SubstratePanel v-else-if="selection.nodeType === EMTreeNodeType.SubstrateItem" :data="packageData" :substrateName="selection.substrateName!" />
                 <GlassPanel v-else-if="selection.nodeType === EMTreeNodeType.GlassItem" :data="packageData" :styleName="selection.glassName!" />
                 <div v-else class="wR_HCVC placeholderPanel">
-                    <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">请在左侧选择一个节点进行编辑</span>
+                    <span class="sumiStudio_font_body-large" style="color: var(--sumiStudioCore-color-surface-on-20);">{{ T('page.manageResourcePackage.editor.placeholder') }}</span>
                 </div>
             </div>
         </div>
@@ -52,6 +52,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import Button from '@/Core/Module/GUI/Control_DLL/Button/Button.vue';
 import PackageTree from './Common/Component/PackageTree.vue';
 import PackageInfoPanel from './Common/Component/PackageInfoPanel.vue';
@@ -78,6 +81,8 @@ const emit = defineEmits<{
 
 const packageData = ref(new ResourcePackageData(props.packageId));
 const importInputRef = ref<HTMLInputElement | null>(null);
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 const selection = ref<IEditorSelection>({
     nodeType: EMTreeNodeType.PackageInfo,
     nodeID: 'info',
@@ -96,10 +101,10 @@ function OnSelectNode(sel: IEditorSelection): void
 
 function OnAddSpecies(): void
 {
-    const name = prompt('请输入物种文件夹名称（拉丁学名，如 PoeciliaReticulata）：');
+    const name = prompt(T('page.manageResourcePackage.editor.promptSpeciesName'));
     if (name === null || name.trim() === '') return;
 
-    const categoryText = prompt('请选择物种类型：\n1. 鱼 (Fish)\n2. 虾 (Shrimp)\n3. 蟹 (Crab)\n4. 螺 (Snail)\n5. 贝类 (Bivalve)\n\n请输入序号：', '1');
+    const categoryText = prompt(T('page.manageResourcePackage.editor.promptSpeciesCategory'), '1');
     if (categoryText === null) return;
 
     const categoryMap: Record<string, 'Fish' | 'Shrimp' | 'Crab' | 'Snail' | 'Bivalve'> = {
@@ -112,7 +117,7 @@ function OnAddSpecies(): void
     const category = categoryMap[categoryText.trim()];
     if (category === undefined)
     {
-        alert('无效的类型序号。');
+        alert(T('page.manageResourcePackage.editor.alertInvalidCategory'));
         return;
     }
 
@@ -121,13 +126,13 @@ function OnAddSpecies(): void
 
 async function OnRemoveSpecies(speciesName: string): Promise<void>
 {
-    if (confirm(`确定要删除物种 "${speciesName}" 吗？此操作不可撤销。`) === false) return;
+    if (confirm(T('page.manageResourcePackage.editor.confirmRemoveSpecies', { name: speciesName })) === false) return;
     await packageData.value.RemoveSpecies(speciesName);
 }
 
 function OnAddStrain(speciesName: string): void
 {
-    const name = prompt('请输入新品系名称（如 Albino）：');
+    const name = prompt(T('page.manageResourcePackage.editor.promptStrainName'));
     if (name === null || name.trim() === '') return;
 
     packageData.value.AddStrain(speciesName, name.trim());
@@ -135,13 +140,13 @@ function OnAddStrain(speciesName: string): void
 
 async function OnRemoveStrain(speciesName: string, strainName: string): Promise<void>
 {
-    if (confirm(`确定要删除品系 "${strainName}" 吗？`) === false) return;
+    if (confirm(T('page.manageResourcePackage.editor.confirmRemoveStrain', { name: strainName })) === false) return;
     await packageData.value.RemoveStrain(speciesName, strainName);
 }
 
 function OnAddDecoration(): void
 {
-    const name = prompt('请输入装饰物文件夹名称：');
+    const name = prompt(T('page.manageResourcePackage.editor.promptDecorationName'));
     if (name === null || name.trim() === '') return;
 
     packageData.value.AddDecoration(name.trim());
@@ -149,14 +154,14 @@ function OnAddDecoration(): void
 
 async function OnRemoveDecoration(decorationName: string): Promise<void>
 {
-    if (confirm(`确定要删除装饰物 "${decorationName}" 吗？`) === false) return;
+    if (confirm(T('page.manageResourcePackage.editor.confirmRemoveDecoration', { name: decorationName })) === false) return;
     await packageData.value.RemoveDecoration(decorationName);
 }
 
 function OnRemoveDecorationPart(decorationName: string, partID: string): void
 {
     const part = packageData.value.GetDecorationPart(decorationName, partID);
-    if (confirm(`确定要删除子部件 "${part?.name ?? partID}" 吗？`) === false) return;
+    if (confirm(T('page.manageResourcePackage.editor.confirmRemoveDecorationPart', { name: part?.name ?? partID })) === false) return;
     packageData.value.RemoveDecorationPart(decorationName, partID);
     if (selection.value.nodeType === EMTreeNodeType.DecorationPart && selection.value.partID === partID)
     {
@@ -171,7 +176,7 @@ function OnRemoveDecorationPart(decorationName: string, partID: string): void
 
 function OnAddSubstrate(): void
 {
-    const name = prompt('请输入基底文件夹名称：');
+    const name = prompt(T('page.manageResourcePackage.editor.promptSubstrateName'));
     if (name === null || name.trim() === '') return;
 
     packageData.value.AddSubstrate(name.trim());
@@ -179,13 +184,13 @@ function OnAddSubstrate(): void
 
 async function OnRemoveSubstrate(substrateName: string): Promise<void>
 {
-    if (confirm(`确定要删除基底 "${substrateName}" 吗？`) === false) return;
+    if (confirm(T('page.manageResourcePackage.editor.confirmRemoveSubstrate', { name: substrateName })) === false) return;
     await packageData.value.RemoveSubstrate(substrateName);
 }
 
 function OnAddGlass(): void
 {
-    const name = prompt('请输入玻璃样式文件夹名称：');
+    const name = prompt(T('page.manageResourcePackage.editor.promptGlassName'));
     if (name === null || name.trim() === '') return;
 
     packageData.value.AddGlass(name.trim());
@@ -193,7 +198,7 @@ function OnAddGlass(): void
 
 async function OnRemoveGlass(styleName: string): Promise<void>
 {
-    if (confirm(`确定要删除玻璃样式 "${styleName}" 吗？`) === false) return;
+    if (confirm(T('page.manageResourcePackage.editor.confirmRemoveGlass', { name: styleName })) === false) return;
     await packageData.value.RemoveGlass(styleName);
 }
 
@@ -203,7 +208,7 @@ function OnAddLanguage(langTag?: string): void
 
     if (packageData.value.GetLanguageTagList().includes(langTag))
     {
-        alert('该语言标签已存在。');
+        alert(T('page.manageResourcePackage.editor.alertLanguageExists'));
         return;
     }
     packageData.value.AddLanguage(langTag);
@@ -211,7 +216,7 @@ function OnAddLanguage(langTag?: string): void
 
 async function OnRemoveLanguage(langTag: string): Promise<void>
 {
-    if (confirm(`确定要删除语言文件 "${langTag}.json" 吗？`) === false) return;
+    if (confirm(T('page.manageResourcePackage.editor.confirmRemoveLanguage', { name: langTag })) === false) return;
     await packageData.value.RemoveLanguage(langTag);
 }
 

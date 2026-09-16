@@ -1,29 +1,29 @@
 <template>
     <div class="wC_HSVS panel">
-        <span class="sumiStudio_font_title-small panelTitle">📦 包信息 (info.json)</span>
+        <span class="sumiStudio_font_title-small panelTitle">📦 {{ T('page.manageResourcePackage.packageInfo.title') }}</span>
         <div class="wC_HC form">
             <div class="wR_HC fieldRow">
                 <span class="label">ID</span>
                 <InputBox v-model:text="data.packageInfo.id" width="300px" placeholder="com.example.package" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">名称</span>
-                <InputBox v-model:text="data.packageInfo.name" width="300px" placeholder="包名" />
+                <span class="label">{{ T('page.manageResourcePackage.packageInfo.name') }}</span>
+                <InputBox v-model:text="data.packageInfo.name" width="300px" :placeholder="T('page.manageResourcePackage.packageInfo.namePlaceholder')" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">关键词</span>
-                <InputBox v-model:text="data.packageInfo.keywords" width="300px" placeholder="关键词，逗号分隔" />
+                <span class="label">{{ T('page.manageResourcePackage.packageInfo.keywords') }}</span>
+                <InputBox v-model:text="data.packageInfo.keywords" width="300px" :placeholder="T('page.manageResourcePackage.packageInfo.keywordsPlaceholder')" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">版本</span>
+                <span class="label">{{ T('page.manageResourcePackage.packageInfo.version') }}</span>
                 <InputBox v-model:text="data.packageInfo.version" width="300px" placeholder="1.0.0" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">作者</span>
-                <InputBox v-model:text="data.packageInfo.author" width="300px" placeholder="作者名称" />
+                <span class="label">{{ T('page.manageResourcePackage.packageInfo.author') }}</span>
+                <InputBox v-model:text="data.packageInfo.author" width="300px" :placeholder="T('page.manageResourcePackage.packageInfo.authorPlaceholder')" />
             </div>
             <div class="wR_HC fieldRow">
-                <span class="label">协议</span>
+                <span class="label">{{ T('page.manageResourcePackage.packageInfo.license') }}</span>
                 <InputBox v-model:text="data.packageInfo.license" width="300px" placeholder="MIT" />
             </div>
         </div>
@@ -32,11 +32,17 @@
 
 <script setup lang="ts">
 import InputBox from '@/Core/Module/GUI/Control_DLL/InputBox/InputBox.vue';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import type { IResourcePackageData } from '../../ResourcePackageData';
 
 defineProps<{
     data: IResourcePackageData;
 }>();
+
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
 </script>
 
 <style scoped>

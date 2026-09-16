@@ -18,7 +18,6 @@ import FileSystemDevice from '@/Core/Service/File_DLL/ItemFolder/Device/FileSyst
 import FileSystemHtml from '@/Core/Service/File_DLL/ItemFolder/Html/FileSystemHtml';
 import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
 import ServiceLanguage from '@/Core/Service/I18N_DLL/ServiceLanguage';
-import { EMLanguage } from '@/Core/IOC_DLL/Interface/I18N/Enum/EMLanguage';
 
 export default class Main
 {
@@ -42,8 +41,9 @@ export default class Main
 
     private async InitLanguage(): Promise<void>
     {
-        IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).Init();
-        await IOC.Get<IServiceLanguage>(Sym.ServiceLanguage).ChangeLanguage(EMLanguage.zh_Hans);
+        const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+        sLanguage.Init();
+        await sLanguage.ChangeLanguage(sLanguage.NowLanguage);
     }
 
     private InitTheme(): void

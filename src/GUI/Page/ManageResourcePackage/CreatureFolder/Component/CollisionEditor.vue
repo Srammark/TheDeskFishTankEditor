@@ -6,20 +6,20 @@
         </div>
         <div class="propPanel">
             <div class="wR_HC tabBar">
-                <div class="tab" :class="{ active: currentSlot === 'body' }" @click="OnSwitchSlot('body')">身体</div>
-                <div class="tab" :class="{ active: currentSlot === 'mouth' }" @click="OnSwitchSlot('mouth')">嘴部</div>
+                <div class="tab" :class="{ active: currentSlot === 'body' }" @click="OnSwitchSlot('body')">{{ T('page.manageResourcePackage.collision.body') }}</div>
+                <div class="tab" :class="{ active: currentSlot === 'mouth' }" @click="OnSwitchSlot('mouth')">{{ T('page.manageResourcePackage.collision.mouth') }}</div>
             </div>
             <div class="wR_HC toolRow">
-                <span v-if="HasSlotOverride(currentSlot)" class="overrideTag" title="该帧形状已被覆盖，点击重置为基础形状" @click="OnResetOverride(currentSlot)">已覆盖 ×</span>
-                <Button v-if="localData.collider[currentSlot] === null" text="创建形状" variant="outlined" @click="OnCreateCollider" />
-                <Button v-else-if="frameIndex === 0" text="删除形状" variant="outlined" @click="OnDeleteCollider" />
+                <span v-if="HasSlotOverride(currentSlot)" class="overrideTag" :title="T('page.manageResourcePackage.collision.overrideTip')" @click="OnResetOverride(currentSlot)">{{ T('page.manageResourcePackage.collision.overridden') }}</span>
+                <Button v-if="localData.collider[currentSlot] === null" :text="T('page.manageResourcePackage.collision.createShape')" variant="outlined" @click="OnCreateCollider" />
+                <Button v-else-if="frameIndex === 0" :text="T('page.manageResourcePackage.collision.deleteShape')" variant="outlined" @click="OnDeleteCollider" />
             </div>
             <div class="wR_HC toolRow" style="gap: 8px;">
-                <Button text="复制形状" variant="outlined" :disabled="GetEffectiveShape(currentSlot) === null" @click="OnCopyShape" />
-                <Button text="粘贴形状" variant="outlined" :disabled="colliderClipboard === null" @click="OnPasteShape" />
-                <span v-if="colliderClipboard !== null" class="frameTip">已复制：{{ ShapeTypeName(colliderClipboard) }}</span>
+                <Button :text="T('page.manageResourcePackage.collision.copyShape')" variant="outlined" :disabled="GetEffectiveShape(currentSlot) === null" @click="OnCopyShape" />
+                <Button :text="T('page.manageResourcePackage.collision.pasteShape')" variant="outlined" :disabled="colliderClipboard === null" @click="OnPasteShape" />
+                <span v-if="colliderClipboard !== null" class="frameTip">{{ T('page.manageResourcePackage.collision.copied', { name: ShapeTypeName(colliderClipboard) }) }}</span>
             </div>
-            <span v-if="frameIndex === 0" class="frameTip">第 1 帧编辑的是基础形状（所有帧共用）</span>
+            <span v-if="frameIndex === 0" class="frameTip">{{ T('page.manageResourcePackage.collision.baseShapeTip') }}</span>
         </div>
     </div>
 </template>
@@ -35,6 +35,9 @@ const colliderClipboardShared = shallowRef<IColliderDataClipboard | null>(null);
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { Texture } from 'pixi.js';
+import IOC from '@/Core/IOC_DLL/IOC';
+import type IServiceLanguage from '@/Core/IOC_DLL/Interface/I18N/IServiceLanguage';
+import Sym from '@/Core/IOC_DLL/Sym';
 import { EMGeometryType } from '@/Core/Module/Collision2D_DLL/Geometry/GeometryType';
 import type { IActionData, IFrameData, TColliderSlot, IColliderData } from '../../Types.ts';
 import ShapeEditor, { type IShapeEditorViewport } from '../../Common/Component/ShapeEditor.vue';
@@ -82,19 +85,23 @@ const mouthShape = computed<IColliderData | null>(() => GetEffectiveShape('mouth
 
 const colliderClipboard = colliderClipboardShared;
 
-const ShapeTypeNameMap: Record<number, string> = {
-    [EMGeometryType.Circle]: '圆形',
-    [EMGeometryType.Rectangle]: '矩形',
-    [EMGeometryType.Polygon]: '多边形',
-    [EMGeometryType.Capsule]: '胶囊',
-    [EMGeometryType.Ellipse]: '椭圆',
-    [EMGeometryType.Pie]: '扇形',
-    [EMGeometryType.Segment]: '线段'
+const sLanguage = IOC.Get<IServiceLanguage>(Sym.ServiceLanguage);
+const T = (key: string, args?: Record<string, unknown>) => sLanguage.T(key, args);
+
+const ShapeTypeKeyMap: Record<number, string> = {
+    [EMGeometryType.Circle]: 'page.manageResourcePackage.shapeEditor.circle',
+    [EMGeometryType.Rectangle]: 'page.manageResourcePackage.shapeEditor.rectangle',
+    [EMGeometryType.Polygon]: 'page.manageResourcePackage.shapeEditor.polygon',
+    [EMGeometryType.Capsule]: 'page.manageResourcePackage.shapeEditor.capsule',
+    [EMGeometryType.Ellipse]: 'page.manageResourcePackage.shapeEditor.ellipse',
+    [EMGeometryType.Pie]: 'page.manageResourcePackage.shapeEditor.pie',
+    [EMGeometryType.Segment]: 'page.manageResourcePackage.shapeEditor.segment'
 };
 
 function ShapeTypeName(shape: IColliderData): string
 {
-    return ShapeTypeNameMap[shape.type] ?? '形状';
+    const key = ShapeTypeKeyMap[shape.type];
+    return key === undefined ? T('page.manageResourcePackage.shapeEditor.shape') : T(key);
 }
 
 function GetFrameData(): IFrameData | undefined
