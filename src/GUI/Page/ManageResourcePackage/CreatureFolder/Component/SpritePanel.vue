@@ -127,6 +127,8 @@ const frameTextureMap = new Map<string, Texture>();
 let sheetBlobUrl: string | null = null;
 let sheetImg: HTMLImageElement | null = null;
 const frameDataUrlMap = new Map<string, string>();
+// 贴图为普通变量，模板无法追踪，用此版本号触发重渲染
+const sheetVersion = ref(0);
 const uploadTarget = reactive<{ action: TSpriteAction | null; index: number | null }>({ action: null, index: null });
 
 const previewSize = 48;
@@ -203,6 +205,7 @@ async function LoadSheetTexture(): Promise<void>
         });
         frameDataUrlMap.clear();
     }
+    sheetVersion.value++;
 }
 
 function GetFrameSize(): [number, number]
@@ -234,6 +237,7 @@ function HasFrameImage(action: TSpriteAction, index: number): boolean
 
 function GetFrameTexture(action: TSpriteAction, index: number): Texture | null
 {
+    sheetVersion.value;
     if (sheetTexture === null) return null;
     const key = `${action}/${index}`;
     if (frameTextureMap.has(key)) return frameTextureMap.get(key)!;
@@ -252,6 +256,7 @@ function GetFrameTexture(action: TSpriteAction, index: number): Texture | null
 
 function GetFrameImageUrl(action: TSpriteAction, index: number): string | null
 {
+    sheetVersion.value;
     if (sheetImg === null) return null;
     const key = `${action}/${index}`;
     if (frameDataUrlMap.has(key)) return frameDataUrlMap.get(key)!;

@@ -52,14 +52,17 @@ export async function BuildSpriteSheet(
         for (let col = 0; col < actionFrames.length; col++)
         {
             const frameData = actionFrames[col];
-            if (frameData !== null)
+            if (frameData !== null && frameData !== undefined)
             {
                 const blob = new Blob([frameData.buffer as ArrayBuffer], { type: 'image/png' });
                 const bitmap = await createImageBitmap(blob);
                 const texture = Texture.from(bitmap);
                 const sprite = new Sprite(texture);
-                sprite.x = col * fw + Math.max(0, (fw - texture.width) / 2);
-                sprite.y = row * fh + Math.max(0, (fh - texture.height) / 2);
+                // 超出帧格的图片等比缩小，防止溢出污染相邻帧格
+                const scale = Math.min(1, fw / texture.width, fh / texture.height);
+                sprite.scale.set(scale);
+                sprite.x = col * fw + (fw - texture.width * scale) / 2;
+                sprite.y = row * fh + (fh - texture.height * scale) / 2;
                 container.addChild(sprite);
             }
         }
@@ -169,9 +172,11 @@ export async function GenerateDefaultCollider(
 
     const blob = new Blob([imageData.buffer as ArrayBuffer], { type: 'image/png' });
     const bitmap = await createImageBitmap(blob);
-    const offsetX = Math.max(0, (canvas.width - bitmap.width) / 2);
-    const offsetY = Math.max(0, (canvas.height - bitmap.height) / 2);
-    ctx.drawImage(bitmap, offsetX, offsetY);
+    // 与图集绘制保持一致：超出帧格时等比缩小
+    const scale = Math.min(1, canvas.width / bitmap.width, canvas.height / bitmap.height);
+    const drawW = bitmap.width * scale;
+    const drawH = bitmap.height * scale;
+    ctx.drawImage(bitmap, (canvas.width - drawW) / 2, (canvas.height - drawH) / 2, drawW, drawH);
 
     const imageDataObj = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageDataObj.data;
