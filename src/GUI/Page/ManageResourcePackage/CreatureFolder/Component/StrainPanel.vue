@@ -132,6 +132,7 @@ async function ResizeTo100x100(file: File): Promise<Uint8Array>
             const drawHeight = img.height * scale;
             const offsetX = (100 - drawWidth) / 2;
             const offsetY = (100 - drawHeight) / 2;
+            ctx.imageSmoothingEnabled = false;
             ctx.clearRect(0, 0, 100, 100);
             ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
             canvas.toBlob((blob) =>
@@ -207,6 +208,7 @@ async function ResizeTo100x100(file: File): Promise<Uint8Array>
     height: 100px;
     object-fit: cover;
     display: block;
+    image-rendering: pixelated;
 }
 
 .avatarPlaceholder {
